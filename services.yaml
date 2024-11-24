@@ -1,0 +1,27 @@
+services:
+    api:
+        build: .
+        ports:
+            - 5188:5188
+        environment:
+            - MongoDBSettings__ConnectionString=mongodb://mongodb:27017
+            - TZ=America/Sao_Paulo
+        depends_on:
+            - mongodb
+            - redisCache
+    mongodb:
+        image: mongo
+        ports:
+            - 27010:27017
+        volumes:
+            - mongodb_volume:/data/db
+    redisCache:
+        image: redis
+        ports:
+            - 6379:6379
+
+volumes:
+    mongodb_volume:
+        driver: local
+
+

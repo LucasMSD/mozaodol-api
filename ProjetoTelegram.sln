@@ -1,0 +1,38 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34728.123
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjetoTelegram", "ProjetoTelegram\ProjetoTelegram.csproj", "{D777954B-0F9E-4A47-AFDF-FA84E6B15A6E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjetoTelegram.Domain", "ProjetoTelegram.Domain\ProjetoTelegram.Domain.csproj", "{06B625B0-DE99-4F42-AB5D-8283DA315E24}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Deploy", "Deploy", "{9047695E-5E82-441E-BD23-E87151EA098B}"
+	ProjectSection(SolutionItems) = preProject
+		dockerfile = dockerfile
+		mongodb-config = mongodb-config
+		services.yaml = services.yaml
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D777954B-0F9E-4A47-AFDF-FA84E6B15A6E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D777954B-0F9E-4A47-AFDF-FA84E6B15A6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D777954B-0F9E-4A47-AFDF-FA84E6B15A6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D777954B-0F9E-4A47-AFDF-FA84E6B15A6E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{06B625B0-DE99-4F42-AB5D-8283DA315E24}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{06B625B0-DE99-4F42-AB5D-8283DA315E24}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{06B625B0-DE99-4F42-AB5D-8283DA315E24}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{06B625B0-DE99-4F42-AB5D-8283DA315E24}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6E841B1A-A1F7-4244-8128-8EB02EB52AB5}
+	EndGlobalSection
+EndGlobal
