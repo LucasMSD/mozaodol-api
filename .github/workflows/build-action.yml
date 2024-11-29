@@ -36,8 +36,8 @@ jobs:
 
       - name: Build Docker Image
         run: |
-          docker build -t southamerica-east1-docker.pkg.dev/mozaodol/mozaodol-hub/mozaodol-api-deploy-teste .
+          docker build -t southamerica-east1-docker.pkg.dev/mozaodol/mozaodol-hub/mozaodol-api .
 
       - name: Push Docker Image to Artifact Registry
         run: |
-          docker push southamerica-east1-docker.pkg.dev/mozaodol/mozaodol-hub/mozaodol-api-deploy-teste
+          docker push southamerica-east1-docker.pkg.dev/mozaodol/mozaodol-hub/mozaodol-api
