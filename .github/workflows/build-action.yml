@@ -2,7 +2,7 @@ name: Mozaldol API CI
 
 on:
   push:
-    branches: ["teste-github-acitons"]
+    branches: ["teste-github-actions"]
 
 jobs:
   first_job:
