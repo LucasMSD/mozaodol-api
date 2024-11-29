@@ -1,5 +1,4 @@
-name: mozaldol-api-name
-run-name: Primeira CI do mozaodol-api
+name: Mozaldol API CI
 
 on:
   push:
@@ -7,22 +6,21 @@ on:
 
 jobs:
   first_job:
-    name: Beleza, meu primeiro Job
+    name: Meu primeiro Job
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-        
-    - name: Install .NET Core (copiei)
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 8.0.x
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-    - name: Instalar as dependencias
-      run: dotnet restore
+      - name: Instalar .NET Core
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
 
+      - name: Restaurar dependências
+        run: dotnet restore
 
-    - name: Buildar o projeto
-      run: dotnet build --configuration Realease --no-restore
+      - name: Buildar o projeto
+        run: dotnet build --configuration Release --no-restore
