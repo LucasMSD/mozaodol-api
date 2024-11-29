@@ -19,5 +19,6 @@ jobs:
       - name: Instalar as dependencias
         run: dotnet restore
 
+
       - name: Buildar o projeto
         run: dotnet build --configuration Realease --no-restore
