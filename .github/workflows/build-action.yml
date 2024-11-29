@@ -30,6 +30,9 @@ jobs:
         with:
           credentials_json: ${{ secrets.GCP_CREDENTIALS }}
 
+      - name: Login with GCP
+        run: gcloud auth login
+
       - name: Configure Docker for GCP
         run: |
           gcloud auth configure-docker southamerica-east1-docker.pkg.dev
