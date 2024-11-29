@@ -12,8 +12,7 @@ namespace ProjetoTelegram.Controllers
         {
             return Ok(
                 $"""
-                Deu bom até!
-                Deploy automático!!!
+                Vish, será que deu certo mesmo???
 
                 {nameof(Environment.OSVersion)}: {Environment.OSVersion}
                 {nameof(Environment.NewLine)}: {Environment.NewLine}
