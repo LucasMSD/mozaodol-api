@@ -41,3 +41,13 @@ jobs:
       - name: Push Docker Image to Artifact Registry
         run: |
           docker push southamerica-east1-docker.pkg.dev/mozaodol/mozaodol-hub/mozaodol-api
+
+
+      - name: Deploy to Cloud Run
+        run: |
+          IMAGE="southamerica-east1-docker.pkg.dev/mozaodol/mozaodol-hub/mozaodol-api"
+          gcloud run deploy mozaodol-api \
+            --image $IMAGE \
+            --region southamerica-east1 \
+            --platform managed \
+            --allow-unauthenticated

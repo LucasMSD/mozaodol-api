@@ -13,7 +13,7 @@ namespace ProjetoTelegram.Controllers
             return Ok(
                 $"""
                 Deu bom até!
-                Push da imagem automático!!!
+                Deploy automático!!!
 
                 {nameof(Environment.OSVersion)}: {Environment.OSVersion}
                 {nameof(Environment.NewLine)}: {Environment.NewLine}
