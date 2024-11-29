@@ -38,9 +38,6 @@ jobs:
         run: |
           docker build -t southamerica-east1-docker.pkg.dev/mozaodol/mozaodol-hub/mozaodol-api .
 
-      - name: Autenticar de novo (não entendi)
-        run: gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://southamerica-east1.pkg.dev
-      
       - name: Push Docker Image to Artifact Registry
         run: |
           docker push southamerica-east1-docker.pkg.dev/mozaodol/mozaodol-hub/mozaodol-api
