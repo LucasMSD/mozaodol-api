@@ -3,8 +3,7 @@ run-name: Primeira CI do mozaodol-api
 
 on:
   push:
-    branches:
-      - 'teste-github-acitons'
+    branches: ["teste-github-acitons"]
 
 jobs:
   first_job:
