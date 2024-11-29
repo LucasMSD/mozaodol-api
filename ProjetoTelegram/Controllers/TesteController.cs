@@ -25,6 +25,7 @@ namespace ProjetoTelegram.Controllers
                 {nameof(Environment.SystemDirectory)}: {Environment.SystemDirectory}
                 {nameof(Environment.UserDomainName)}: {Environment.UserDomainName}
                 {WriteEnvieronment()}
+                "Belezza, testando"
                 """);
         }
 
