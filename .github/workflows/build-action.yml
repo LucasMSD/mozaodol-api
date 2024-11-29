@@ -30,9 +30,6 @@ jobs:
         with:
           credentials_json: ${{ secrets.GCP_CREDENTIALS }}
 
-      - name: Login with GCP
-        run: gcloud auth login
-
       - name: Configure Docker for GCP
         run: |
           gcloud auth configure-docker southamerica-east1-docker.pkg.dev
@@ -41,6 +38,9 @@ jobs:
         run: |
           docker build -t southamerica-east1-docker.pkg.dev/mozaodol/mozaodol-hub/mozaodol-api .
 
+      - name: Autenticar de novo (não entendi)
+        run: gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://southamerica-east1.pkg.dev
+      
       - name: Push Docker Image to Artifact Registry
         run: |
           docker push southamerica-east1-docker.pkg.dev/mozaodol/mozaodol-hub/mozaodol-api
