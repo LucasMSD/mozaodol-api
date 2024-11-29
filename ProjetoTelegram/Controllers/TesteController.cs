@@ -13,6 +13,8 @@ namespace ProjetoTelegram.Controllers
             return Ok(
                 $"""
                 Deu bom até!
+                Push da imagem automático!!!
+
                 {nameof(Environment.OSVersion)}: {Environment.OSVersion}
                 {nameof(Environment.NewLine)}: {Environment.NewLine}
                 {nameof(Environment.ProcessId)}: {Environment.ProcessId}
@@ -25,8 +27,6 @@ namespace ProjetoTelegram.Controllers
                 {nameof(Environment.SystemDirectory)}: {Environment.SystemDirectory}
                 {nameof(Environment.UserDomainName)}: {Environment.UserDomainName}
                 {WriteEnvieronment()}
-
-
 
                 "Belezza, testando"
                 """);

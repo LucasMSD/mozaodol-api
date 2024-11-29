@@ -24,3 +24,20 @@ jobs:
 
       - name: Buildar o projeto
         run: dotnet build --configuration Release --no-restore
+
+      - name: Authenticate with GCP
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+
+      - name: Configure Docker for GCP
+        run: |
+          gcloud auth configure-docker southamerica-east1-docker.pkg.dev
+
+      - name: Build Docker Image
+        run: |
+          docker build -t southamerica-east1-docker.pkg.dev/mozaodol/mozaodol-hub/mozaodol-api-deploy-teste .
+
+      - name: Push Docker Image to Artifact Registry
+        run: |
+          docker push southamerica-east1-docker.pkg.dev/mozaodol/mozaodol-hub/mozaodol-api-deploy-teste
