@@ -1,10 +1,9 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace ProjetoTelegram.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("")]
     public class TesteController : ControllerBase
     {
         [HttpGet]

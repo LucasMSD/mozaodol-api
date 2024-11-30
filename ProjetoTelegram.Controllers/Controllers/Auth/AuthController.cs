@@ -2,7 +2,7 @@
 using ProjetoTelegram.Domain.Models.Auth;
 using ProjetoTelegram.Domain.Services.AuthServices;
 
-namespace ProjetoTelegram.Controllers
+namespace ProjetoTelegram.Controllers.Controllers.Auth
 {
     [ApiController]
     [Route("[controller]")]

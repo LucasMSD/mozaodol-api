@@ -5,7 +5,7 @@ using ProjetoTelegram.Domain.Models.Chat;
 using ProjetoTelegram.Domain.Services.ChatServices;
 using System.Security.Claims;
 
-namespace ProjetoTelegram.Controllers
+namespace ProjetoTelegram.Controllers.Controllers.Chat
 {
     [ApiController]
     [Route("[controller]")]

@@ -1,13 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
 using MongoDB.Bson;
 using ProjetoTelegram.Domain.Models.ContactList;
 using ProjetoTelegram.Domain.Models.User;
 using ProjetoTelegram.Domain.Services.UserServices;
 using System.Security.Claims;
 
-namespace ProjetoTelegram.Controllers
+namespace ProjetoTelegram.Controllers.Controllers.User
 {
     [ApiController]
     [Route("[controller]")]
@@ -50,7 +49,7 @@ namespace ProjetoTelegram.Controllers
         }
 
         [HttpDelete("contacts/remove/{contactId}")]
-        public async Task<IActionResult> AddContact([FromRouteAttribute] ObjectId contactId)
+        public async Task<IActionResult> AddContact([FromRoute] ObjectId contactId)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             return Ok(await _userService.RemoveContact(new ObjectId(userId), contactId));
@@ -61,7 +60,7 @@ namespace ProjetoTelegram.Controllers
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             await _userService.UpdatePushToken(new ObjectId(userId), updatePushTokenModel);
-            return Ok(new { Message =  "Atualizado"});
+            return Ok(new { Message = "Atualizado" });
         }
     }
 }
