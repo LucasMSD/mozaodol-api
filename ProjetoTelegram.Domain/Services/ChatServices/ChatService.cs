@@ -3,7 +3,6 @@ using Expo.Server.Models;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Caching.Distributed;
 using MongoDB.Bson;
-using ProjetoTelegram.Domain.Hubs;
 using ProjetoTelegram.Domain.Models.Chat;
 using ProjetoTelegram.Domain.Models.Chat.Message;
 using ProjetoTelegram.Domain.Models.User;
@@ -20,20 +19,17 @@ namespace ProjetoTelegram.Domain.Services.ChatServices
         private readonly IUserRepository _userRepository;
         private readonly IMessageRepository _messageRepository;
         private readonly IDistributedCache _distributedCache;
-        private readonly IHubContext<ChatHub> _chatHub;
 
         public ChatService(
             IChatRepository chatRepository,
             IMessageRepository messageRepository,
             IUserRepository userRepository,
-            IDistributedCache distributedCache,
-            IHubContext<ChatHub> chatHub)
+            IDistributedCache distributedCache)
         {
             _chatRepository = chatRepository;
             _messageRepository = messageRepository;
             _userRepository = userRepository;
             _distributedCache = distributedCache;
-            _chatHub = chatHub;
         }
 
         public async Task<ObjectId> CreateChat(CreateChatModel chatModel)
@@ -87,13 +83,13 @@ namespace ProjetoTelegram.Domain.Services.ChatServices
             return name;
         }
 
-        public async Task<MessageDto> SendMessage(NewMessageModel newMessage)
+        public async Task<(MessageDto, IEnumerable<string>)> SendMessage(NewMessageModel newMessage)
         {
             // validar se o chat existe
             var chat = await _chatRepository.Get(newMessage.ChatId);
 
             if (chat == null)
-                return null;
+                return (null, null);
 
             var user = await _userRepository.Get(newMessage.UserId);
 
@@ -123,12 +119,11 @@ namespace ProjetoTelegram.Domain.Services.ChatServices
             };
 
             var usersIds = chat.UsersIds.Where(x => x != message.UserId).Select(x => x.ToString());
-            await _chatHub.Clients.Users(usersIds).SendAsync("ReceiveMessage", messageDto);
-            await _chatHub.Clients.User(user._id.ToString()).SendAsync($"MessageStatusUpdate-{newMessage.ExternalId}", Enums.MessageStatus.Sent);
+
 
             await SendNotifications(messageDto, chat);
 
-            return messageDto;
+            return (messageDto, usersIds);
         }
 
         public async Task<IEnumerable<MessageDto>> GetMessages(ObjectId currentUserId, ObjectId chatId)
@@ -177,12 +172,13 @@ namespace ProjetoTelegram.Domain.Services.ChatServices
             var result = await expoSDKClient.PushSendAsync(pushTicketReq);
         }
 
-        public async Task SeenMessage(SeenMessageModel seenMessage)
+        public async Task<Message> SeenMessage(SeenMessageModel seenMessage)
         {
             var message = await _messageRepository.Get(seenMessage.MessageId);
 
             await _messageRepository.UpdateStatus(message._id, Enums.MessageStatus.Seen);
-            await _chatHub.Clients.User(message.UserId.ToString()).SendAsync($"MessageStatusUpdate-{message.ExternalId}", Enums.MessageStatus.Seen);
+            return message;
+            
         }
     }
 }

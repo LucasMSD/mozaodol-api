@@ -7,11 +7,13 @@ namespace ProjetoTelegram.Domain.Services.ChatServices
     public interface IChatService
     {
         Task<ObjectId> CreateChat(CreateChatModel chatModel);
-        Task<MessageDto> SendMessage(NewMessageModel newMessage);
+        // todo: refatorar
+        Task<(MessageDto, IEnumerable<string>)> SendMessage(NewMessageModel newMessage);
 
         Task<IEnumerable<ChatDto>> GetAll(ObjectId userId);
         Task<IEnumerable<MessageDto>> GetMessages(ObjectId objectId, ObjectId chatId);
         Task SendNotifications(MessageDto messagem, Chat chat);
-        Task SeenMessage(SeenMessageModel seenMessage);
+        // todo: refatorar
+        Task<Message> SeenMessage(SeenMessageModel seenMessage);
     }
 }
