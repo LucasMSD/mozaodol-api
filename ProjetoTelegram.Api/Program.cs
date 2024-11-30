@@ -1,5 +1,6 @@
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
@@ -20,6 +21,8 @@ using ProjetoTelegram.Infrastructure.Contexts.RedisDBContexts;
 using ProjetoTelegram.Infrastructure.Repositories.ChatRepositories;
 using ProjetoTelegram.Infrastructure.Repositories.MessageRepositories;
 using ProjetoTelegram.Infrastructure.Repositories.UserRepositories;
+using ProjetoTelegram.Infrastructure.Services.NotificationServices.ExpoPushNotificationServices;
+using ProjetoTelegram.Infrastructure.Services.NotificationServices.SignalRNotificationServices;
 using ProjetoTelegram.Infrastructure.Services.TokenServices.JwtTokenServices;
 using StackExchange.Redis;
 using System.Text;
@@ -128,6 +131,8 @@ namespace ProjetoTelegram
             builder.Services.AddScoped<IChatRepository, ChatRepository>();
             builder.Services.AddScoped<IMessageRepository, MessageRepository>();
             builder.Services.AddScoped<ITokenService, JwtTokenService>();
+            builder.Services.AddScoped<INotificationService<IRealTimeNotificationMessage>, SginalRNotificationServiceServices<IRealTimeNotificationMessage, ChatHub>>();
+            builder.Services.AddScoped<INotificationService<IPushNotificationMessage>, ExpoPushNotificationService<IPushNotificationMessage>>();
 
             var app = builder.Build();
 

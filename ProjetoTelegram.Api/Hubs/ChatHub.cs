@@ -27,29 +27,17 @@ namespace ProjetoTelegram.Api.Hubs
             => await _chatService.OnLeftChat(Context.UserIdentifier);
 
         public async Task CreateChat(CreateChatModel chatModel)
-        {
-            var chatId = await _chatService.CreateChat(chatModel);
-            await Clients.User(Context.UserIdentifier).SendAsync("ChatCreated", new { ChatId = chatId });
-        }
+            => await _chatService.CreateChat(chatModel, Context.UserIdentifier);
 
         public async Task OnSendMessage(NewMessageModel newMessage)
         {
             newMessage.UserId = new ObjectId(Context.UserIdentifier);
-            Result<(MessageDto messageDto, List<string> userIds)> sendMessageResult = await _chatService.SendMessage(newMessage);
-
-            if (sendMessageResult.IsFailed) return;
-
-            await Clients.Users(sendMessageResult.Value.userIds).SendAsync("ReceiveMessage", sendMessageResult.Value.messageDto);
-            await Clients.User(sendMessageResult.Value.messageDto.UserId.ToString()).SendAsync($"MessageStatusUpdate-{newMessage.ExternalId}", MessageStatus.Sent);
+            await _chatService.SendMessage(newMessage);
         }
         public async Task OnSeenMessage(SeenMessageModel seenMessage)
-        {
-            // todo: reforar esse código
-            var messageResult = await _chatService.SeenMessage(seenMessage);
+            => await _chatService.SeenMessage(seenMessage, Context.UserIdentifier);
 
-            if (messageResult.IsFailed) return;
-            await Clients.User(messageResult.Value.UserId.ToString()).SendAsync($"MessageStatusUpdate-{messageResult.Value.ExternalId}", MessageStatus.Seen);
-        }
+        
         public override async Task OnDisconnectedAsync(Exception? exception)
             => await _chatService.OnDisconnected(Context.UserIdentifier, exception);
 

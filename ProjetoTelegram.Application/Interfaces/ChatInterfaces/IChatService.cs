@@ -9,14 +9,13 @@ namespace ProjetoTelegram.Application.Interfaces.ChatInterfaces
 {
     public interface IChatService
     {
-        Task<Result<ObjectId>> CreateChat(CreateChatModel chatModel);
+        Task<Result<ObjectId>> CreateChat(CreateChatModel chatModel, string userId);
         // todo: refatorar
-        Task<Result<(MessageDto, List<string>)>> SendMessage(NewMessageModel newMessage);
+        Task<Result<MessageDto>> SendMessage(NewMessageModel newMessage);
         Task<Result<List<ChatDto>>> GetAll(ObjectId userId);
         Task<Result<List<MessageDto>>> GetMessages(ObjectId objectId, ObjectId chatId);
-        Task<Result> SendNotifications(MessageDto messagem, Chat chat);
         // todo: refatorar
-        Task<Result<Message>> SeenMessage(SeenMessageModel seenMessage);
+        Task<Result<Message>> SeenMessage(SeenMessageModel seenMessage, string userId);
         Task OnOpenedChat(OnOpenedChatModel onOpenedChatModel, string userId);
         Task OnLeftChat(string userId);
         Task OnDisconnected(string userId, Exception? exception);

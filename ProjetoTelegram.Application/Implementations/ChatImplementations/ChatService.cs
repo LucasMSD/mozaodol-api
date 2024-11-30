@@ -1,6 +1,4 @@
-﻿using Expo.Server.Client;
-using Expo.Server.Models;
-using FluentResults;
+﻿using FluentResults;
 using Microsoft.Extensions.Caching.Distributed;
 using MongoDB.Bson;
 using ProjetoTelegram.Application.DTOs.ChatDTOs;
@@ -15,6 +13,7 @@ using ProjetoTelegram.Domain.Enums;
 using ProjetoTelegram.Domain.Repositories.ChatRepositories;
 using ProjetoTelegram.Domain.Repositories.MessageRepositories;
 using ProjetoTelegram.Domain.Repositories.UserRepositories;
+using ProjetoTelegram.Domain.Services;
 using System.Text.Json;
 
 namespace ProjetoTelegram.Application.Implementations.ChatImplementations
@@ -26,22 +25,28 @@ namespace ProjetoTelegram.Application.Implementations.ChatImplementations
         private readonly IUserService _userService;
         private readonly IMessageRepository _messageRepository;
         private readonly IDistributedCache _distributedCache;
+        private readonly INotificationService<IRealTimeNotificationMessage> _realTimeNotificationService;
+        private readonly INotificationService<IPushNotificationMessage> _pushNotificationService;
 
         public ChatService(
             IChatRepository chatRepository,
             IMessageRepository messageRepository,
             IUserRepository userRepository,
             IDistributedCache distributedCache,
-            IUserService userService)
+            IUserService userService,
+            INotificationService<IRealTimeNotificationMessage> realTimeNotificationService,
+            INotificationService<IPushNotificationMessage> pushNotificationService)
         {
             _chatRepository = chatRepository;
             _messageRepository = messageRepository;
             _userRepository = userRepository;
             _distributedCache = distributedCache;
             _userService = userService;
+            _realTimeNotificationService = realTimeNotificationService;
+            _pushNotificationService = pushNotificationService;
         }
 
-        public async Task<Result<ObjectId>> CreateChat(CreateChatModel chatModel)
+        public async Task<Result<ObjectId>> CreateChat(CreateChatModel chatModel, string userId)
         {
             var chat = new Chat
             {
@@ -51,10 +56,14 @@ namespace ProjetoTelegram.Application.Implementations.ChatImplementations
             var insertResult = await _chatRepository.Insert(chat);
             if (insertResult.IsFailed) return Result.Fail("Erro ao criar chat.").WithErrors(insertResult.Errors);
 
-
             var addUserToChatResult =  await _userRepository.AddToChat(chat.UsersIds, chat._id);
             if (addUserToChatResult.IsFailed) return Result.Fail("Erro ao incluir usuários no chat.").WithErrors(addUserToChatResult.Errors);
 
+            await _realTimeNotificationService.Notify([userId], new RealTimeNotificationMessage()
+            {
+                ChannelId = "ChatCreated",
+                Content = new { ChatId = chat._id }
+            });
             return chat._id;
         }
 
@@ -97,9 +106,10 @@ namespace ProjetoTelegram.Application.Implementations.ChatImplementations
             return name;
         }
 
-        public async Task<Result<(MessageDto, List<string>)>> SendMessage(NewMessageModel newMessage)
+        public async Task<Result<MessageDto>> SendMessage(NewMessageModel newMessage)
         {
             // validar se o chat existe
+            // todo: se der algum erro, eu preciso avisar o client sobre o problema no envio
             var getChatResult = await _chatRepository.Get(newMessage.ChatId);
             if (getChatResult.IsFailed) return Result.Fail("Erro ao buscar chat.").WithErrors(getChatResult.Errors);
             if (getChatResult.Value == null) return Result.Fail("Chat não encontrado.");
@@ -133,12 +143,22 @@ namespace ProjetoTelegram.Application.Implementations.ChatImplementations
                 Timestamp = message.Timestamp.ToString("HH:mm"),
             };
 
-            var usersIds = getChatResult.Value.UsersIds.Where(x => x != message.UserId).Select(x => x.ToString());
+            var usersToSendNotification = getChatResult.Value.UsersIds.Where(x => x != message.UserId).Select(x => x.ToString());
 
+            await _realTimeNotificationService.Notify(usersToSendNotification, new RealTimeNotificationMessage
+            {
+                ChannelId = "ReceiveMessage",
+                Content = messageDto
+            });
+            await _realTimeNotificationService.Notify([messageDto.UserId.ToString()], new RealTimeNotificationMessage
+            {
+                ChannelId = $"MessageStatusUpdate-{newMessage.ExternalId}",
+                Content = MessageStatus.Sent
+            });
 
-            await SendNotifications(messageDto, getChatResult.Value);
+            await SendPushNotifications(messageDto, getChatResult.Value);
 
-            return (messageDto, usersIds.ToList());
+            return messageDto;
         }
 
         public async Task<Result<List<MessageDto>>> GetMessages(ObjectId currentUserId, ObjectId chatId)
@@ -169,12 +189,13 @@ namespace ProjetoTelegram.Application.Implementations.ChatImplementations
             }).ToList();
         }
 
-        public async Task<Result> SendNotifications(MessageDto message, Chat chat)
+        public async Task<Result> SendPushNotifications(MessageDto message, Chat chat)
         {
             // todo: fazer mais validações
             var chatUsersIds = chat.UsersIds.Where(x => x != message.UserId);
             var users = new List<UserState>();
 
+            // todo: refatorar para não depender apenas do cache (?)
             foreach (var userId in chatUsersIds)
             {
                 var userJson = await _distributedCache.GetStringAsync(userId.ToString());
@@ -184,27 +205,30 @@ namespace ProjetoTelegram.Application.Implementations.ChatImplementations
 
             var usersToPush = users.Where(x => !string.IsNullOrEmpty(x.PushToken) && (!x.Connected || x.Connected && x.OpenedChatId != chat._id.ToString()));
 
-            var expoSDKClient = new PushApiClient();
-            var pushTicketReq = new PushTicketRequest()
+            await _pushNotificationService.Notify(usersToPush.Select(x => x.PushToken), new PushNotificationMessage
             {
-                PushTo = usersToPush.Select(x => x.PushToken).ToList(),
-                PushBody = message.Text,
-                PushTitle = message.UserUsername,
-                PushChannelId = "receivedMessage",
-                PushSubTitle = "Teste para ver onde aparece isso",
-                PushPriority = "high"
-            };
-            var result = await expoSDKClient.PushSendAsync(pushTicketReq);
+                ChannelId = "receivedMessage",
+                Content = message.Text,
+                Priority = "high",
+                Title = message.UserUsername,
+                SubTitle = "Ainda não entendi onde aparece essa mensagem"
+            });
 
             return Result.Ok();
         }
 
-        public async Task<Result<Message>> SeenMessage(SeenMessageModel seenMessage)
+        public async Task<Result<Message>> SeenMessage(SeenMessageModel seenMessage, string userId)
         {
             var getMessageResult = await _messageRepository.Get(seenMessage.MessageId);
             if (getMessageResult.IsFailed) return Result.Fail("Erro ao buscar a mensagem.").WithErrors(getMessageResult.Errors);
 
             await _messageRepository.UpdateStatus(getMessageResult.Value._id, MessageStatus.Seen);
+
+            await _realTimeNotificationService.Notify([userId], new RealTimeNotificationMessage
+            {
+                ChannelId = $"MessageStatusUpdate-{getMessageResult.Value.ExternalId}",
+                Content = MessageStatus.Seen
+            });
             return getMessageResult.Value;
         }
 
