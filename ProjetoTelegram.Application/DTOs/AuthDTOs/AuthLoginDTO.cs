@@ -1,4 +1,4 @@
-﻿namespace ProjetoTelegram.Domain.Models.Auth
+﻿namespace ProjetoTelegram.Application.DTOs.AuthDTOs
 {
     public class AuthLoginModel
     {

@@ -1,10 +1,11 @@
 ﻿using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Bson;
+using ProjetoTelegram.Application.DTOs.AuthDTOs;
 using ProjetoTelegram.Application.Interfaces.AuthInterfaces;
 using ProjetoTelegram.Domain.Config.JwtConfig;
+using ProjetoTelegram.Domain.Entities.UserEntities;
 using ProjetoTelegram.Domain.Models.Auth;
-using ProjetoTelegram.Domain.Models.User;
 using ProjetoTelegram.Domain.Repositories.UserRepositories;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;

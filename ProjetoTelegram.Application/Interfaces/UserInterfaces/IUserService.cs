@@ -1,6 +1,6 @@
 ﻿using MongoDB.Bson;
-using ProjetoTelegram.Domain.Models.ContactList;
-using ProjetoTelegram.Domain.Models.User;
+using ProjetoTelegram.Application.DTOs.ContactDTOs;
+using ProjetoTelegram.Application.DTOs.UserDTOs;
 
 namespace ProjetoTelegram.Application.Interfaces.UserInterfaces
 {

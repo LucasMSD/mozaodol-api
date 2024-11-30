@@ -2,11 +2,13 @@
 using Expo.Server.Models;
 using Microsoft.Extensions.Caching.Distributed;
 using MongoDB.Bson;
+using ProjetoTelegram.Application.DTOs.ChatDTOs;
+using ProjetoTelegram.Application.DTOs.MessageDTOs;
+using ProjetoTelegram.Application.DTOs.UserDTOs;
 using ProjetoTelegram.Application.Interfaces.ChatInterfaces;
+using ProjetoTelegram.Domain.Entities.ChatEntities;
+using ProjetoTelegram.Domain.Entities.MessageEntities;
 using ProjetoTelegram.Domain.Enums;
-using ProjetoTelegram.Domain.Models.Chat;
-using ProjetoTelegram.Domain.Models.Chat.Message;
-using ProjetoTelegram.Domain.Models.User;
 using ProjetoTelegram.Domain.Repositories.ChatRepositories;
 using ProjetoTelegram.Domain.Repositories.MessageRepositories;
 using ProjetoTelegram.Domain.Repositories.UserRepositories;

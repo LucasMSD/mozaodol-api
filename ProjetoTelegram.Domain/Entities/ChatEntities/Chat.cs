@@ -1,7 +1,7 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace ProjetoTelegram.Domain.Models.Chat
+namespace ProjetoTelegram.Domain.Entities.ChatEntities
 {
     [BsonIgnoreExtraElements]
     public class Chat

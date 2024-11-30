@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
+using ProjetoTelegram.Application.DTOs.MessageDTOs;
 using ProjetoTelegram.Application.Interfaces.ChatInterfaces;
 using ProjetoTelegram.Domain.Models.Chat;
 using System.Security.Claims;

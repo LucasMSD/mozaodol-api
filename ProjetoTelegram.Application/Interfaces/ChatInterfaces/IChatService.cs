@@ -1,6 +1,8 @@
 ﻿using MongoDB.Bson;
-using ProjetoTelegram.Domain.Models.Chat;
-using ProjetoTelegram.Domain.Models.Chat.Message;
+using ProjetoTelegram.Application.DTOs.ChatDTOs;
+using ProjetoTelegram.Application.DTOs.MessageDTOs;
+using ProjetoTelegram.Domain.Entities.ChatEntities;
+using ProjetoTelegram.Domain.Entities.MessageEntities;
 
 namespace ProjetoTelegram.Application.Interfaces.ChatInterfaces
 {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ProjetoTelegram.Application.DTOs.AuthDTOs;
 using ProjetoTelegram.Application.Interfaces.AuthInterfaces;
-using ProjetoTelegram.Domain.Models.Auth;
 
 namespace ProjetoTelegram.Api.Controllers.Auth
 {

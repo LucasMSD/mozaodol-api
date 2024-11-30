@@ -1,6 +1,6 @@
 ﻿using MongoDB.Bson;
 
-namespace ProjetoTelegram.Domain.Models.ContactList
+namespace ProjetoTelegram.Application.DTOs.ContactDTOs
 {
     public class AddContactModel
     {

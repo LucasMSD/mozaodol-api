@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.Caching.Distributed;
 using MongoDB.Bson;
+using ProjetoTelegram.Application.DTOs.ContactDTOs;
+using ProjetoTelegram.Application.DTOs.UserDTOs;
 using ProjetoTelegram.Application.Interfaces.UserInterfaces;
-using ProjetoTelegram.Domain.Models.ContactList;
-using ProjetoTelegram.Domain.Models.User;
 using ProjetoTelegram.Domain.Repositories.UserRepositories;
 using System.Text.Json;
 

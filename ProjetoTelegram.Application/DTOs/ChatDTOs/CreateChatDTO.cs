@@ -1,6 +1,6 @@
 ﻿using MongoDB.Bson;
 
-namespace ProjetoTelegram.Domain.Models.Chat
+namespace ProjetoTelegram.Application.DTOs.ChatDTOs
 {
     public class CreateChatModel
     {

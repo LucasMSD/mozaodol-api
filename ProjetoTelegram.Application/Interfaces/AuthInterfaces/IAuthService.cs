@@ -1,6 +1,6 @@
 ﻿using MongoDB.Bson;
-using ProjetoTelegram.Domain.Models.Auth;
-using ProjetoTelegram.Domain.Models.User;
+using ProjetoTelegram.Application.DTOs.AuthDTOs;
+using ProjetoTelegram.Domain.Entities.UserEntities;
 
 namespace ProjetoTelegram.Application.Interfaces.AuthInterfaces
 {

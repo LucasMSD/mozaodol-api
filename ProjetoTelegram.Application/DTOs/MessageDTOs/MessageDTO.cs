@@ -1,17 +1,16 @@
 ﻿using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
 using ProjetoTelegram.Domain.Enums;
 
-namespace ProjetoTelegram.Domain.Models.Chat.Message
+namespace ProjetoTelegram.Application.DTOs.MessageDTOs
 {
-    [BsonIgnoreExtraElements]
-    public class Message
+    public class MessageDto
     {
         public ObjectId _id { get; set; }
         public string Text { get; set; }
         public ObjectId UserId { get; set; }
+        public string UserUsername { get; set; }
+        public string Timestamp { get; set; }
         public ObjectId ChatId { get; set; }
-        public DateTime Timestamp { get; set; }
         public MessageStatus Status { get; set; }
         public string ExternalId { get; set; }
     }

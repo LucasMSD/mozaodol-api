@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
+using ProjetoTelegram.Application.DTOs.ContactDTOs;
+using ProjetoTelegram.Application.DTOs.UserDTOs;
 using ProjetoTelegram.Application.Interfaces.UserInterfaces;
-using ProjetoTelegram.Domain.Models.ContactList;
-using ProjetoTelegram.Domain.Models.User;
 using System.Security.Claims;
 
 namespace ProjetoTelegram.Api.Controllers.User

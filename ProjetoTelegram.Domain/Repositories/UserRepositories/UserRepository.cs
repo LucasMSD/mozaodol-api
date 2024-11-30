@@ -1,6 +1,6 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Driver;
-using ProjetoTelegram.Domain.Models.User;
+using ProjetoTelegram.Domain.Entities.UserEntities;
 
 namespace ProjetoTelegram.Domain.Repositories.UserRepositories
 {
@@ -52,11 +52,11 @@ namespace ProjetoTelegram.Domain.Repositories.UserRepositories
                 new UpdateDefinitionBuilder<User>().Set(x => x.Contacts, user.Contacts));
         }
 
-        public async Task UpdatePushToken(ObjectId userId, UpdatePushTokenModel updatePushTokenModel)
+        public async Task UpdatePushToken(ObjectId userId, string pushToken)
         {
             await _context.Database.GetCollection<User>(nameof(User)).UpdateOneAsync(
                 x => x._id == userId,
-                new UpdateDefinitionBuilder<User>().Set(x => x.PushToken, updatePushTokenModel.PushToken));
+                new UpdateDefinitionBuilder<User>().Set(x => x.PushToken, pushToken));
         }
 
         public async Task AddToChat(IEnumerable<ObjectId> usersIds, ObjectId chatId)

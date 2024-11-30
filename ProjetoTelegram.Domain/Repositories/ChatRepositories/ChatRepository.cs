@@ -1,6 +1,6 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Driver;
-using ProjetoTelegram.Domain.Models.Chat;
+using ProjetoTelegram.Domain.Entities.ChatEntities;
 
 namespace ProjetoTelegram.Domain.Repositories.ChatRepositories
 {

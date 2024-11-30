@@ -1,7 +1,7 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace ProjetoTelegram.Domain.Models.User
+namespace ProjetoTelegram.Domain.Entities.UserEntities
 {
     [BsonIgnoreExtraElements]
     public class User
