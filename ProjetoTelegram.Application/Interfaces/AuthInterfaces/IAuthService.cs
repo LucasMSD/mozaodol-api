@@ -9,6 +9,5 @@ namespace ProjetoTelegram.Application.Interfaces.AuthInterfaces
     {
         public Task<Result<User>> Signup(AuthSignupModel signupModel);
         public Task<Result<string>> Login(AuthLoginModel authLoginModel);
-        public string GenerateToken(ObjectId userId);
     }
 }

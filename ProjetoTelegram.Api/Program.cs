@@ -11,15 +11,16 @@ using ProjetoTelegram.Application.Interfaces.AuthInterfaces;
 using ProjetoTelegram.Application.Interfaces.ChatInterfaces;
 using ProjetoTelegram.Application.Interfaces.UserInterfaces;
 using ProjetoTelegram.Domain.Config.JsonConverters;
-using ProjetoTelegram.Domain.Config.JwtConfig;
 using ProjetoTelegram.Domain.Repositories.ChatRepositories;
 using ProjetoTelegram.Domain.Repositories.MessageRepositories;
 using ProjetoTelegram.Domain.Repositories.UserRepositories;
+using ProjetoTelegram.Domain.Services;
 using ProjetoTelegram.Infrastructure.Contexts.MongoDBContexts;
 using ProjetoTelegram.Infrastructure.Contexts.RedisDBContexts;
 using ProjetoTelegram.Infrastructure.Repositories.ChatRepositories;
 using ProjetoTelegram.Infrastructure.Repositories.MessageRepositories;
 using ProjetoTelegram.Infrastructure.Repositories.UserRepositories;
+using ProjetoTelegram.Infrastructure.Services.TokenServices.JwtTokenServices;
 using StackExchange.Redis;
 using System.Text;
 
@@ -126,6 +127,7 @@ namespace ProjetoTelegram
             builder.Services.AddScoped<IChatService, ChatService>();
             builder.Services.AddScoped<IChatRepository, ChatRepository>();
             builder.Services.AddScoped<IMessageRepository, MessageRepository>();
+            builder.Services.AddScoped<ITokenService, JwtTokenService>();
 
             var app = builder.Build();
 

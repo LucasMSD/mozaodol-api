@@ -1,4 +1,4 @@
-﻿namespace ProjetoTelegram.Domain.Config.JwtConfig
+﻿namespace ProjetoTelegram.Infrastructure.Services.TokenServices.JwtTokenServices
 {
     public class JwtSettings
     {

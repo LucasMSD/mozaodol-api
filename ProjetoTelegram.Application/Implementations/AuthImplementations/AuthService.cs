@@ -1,27 +1,21 @@
 ﻿using FluentResults;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using MongoDB.Bson;
 using ProjetoTelegram.Application.DTOs.AuthDTOs;
 using ProjetoTelegram.Application.Interfaces.AuthInterfaces;
-using ProjetoTelegram.Domain.Config.JwtConfig;
 using ProjetoTelegram.Domain.Entities.UserEntities;
 using ProjetoTelegram.Domain.Repositories.UserRepositories;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
+using ProjetoTelegram.Domain.Services;
 
 namespace ProjetoTelegram.Application.Implementations.AuthImplementations
 {
     public class AuthService : IAuthService
     {
         private readonly IUserRepository _userRepository;
-        private readonly JwtSettings _jwtSettings;
+        private readonly ITokenService _tokenService;
 
-        public AuthService(IUserRepository userRepository, IOptions<JwtSettings> jwtSettings)
+        public AuthService(IUserRepository userRepository, ITokenService tokenService)
         {
             _userRepository = userRepository;
-            _jwtSettings = jwtSettings.Value;
+            _tokenService = tokenService;
         }
 
         public async Task<Result<User>> Signup(AuthSignupModel signupModel)
@@ -61,28 +55,7 @@ namespace ProjetoTelegram.Application.Implementations.AuthImplementations
                 return Result.Fail("Combinação de Username e senha incorretos.");
             }
 
-            return GenerateToken(userResult.Value._id);
-        }
-
-        public string GenerateToken(ObjectId userId)
-        {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_jwtSettings.SecretKey);
-
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new Claim[]
-                {
-                new Claim(ClaimTypes.NameIdentifier, userId.ToString())
-                }),
-                Expires = DateTime.UtcNow.AddDays(1),
-                Issuer = _jwtSettings.Issuer,
-                Audience = _jwtSettings.Audience,
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
+            return _tokenService.GenerateToken(userResult.Value._id);
         }
     }
 }
