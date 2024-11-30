@@ -20,27 +20,27 @@ namespace ProjetoTelegram.Api.Controllers.Auth
         {
             var result = await _authService.Signup(signupModel);
 
-            if (result == null)
+            if (result.IsFailed)
             {
                 return BadRequest($"Usuário {signupModel.Username} já existe");
             }
 
-            return Ok(result);
+            return Ok(result.Value);
         }
 
         [HttpPost("login")]
-        public IActionResult Login([FromBody] AuthLoginModel authLoginModel)
+        public async Task<IActionResult> Login([FromBody] AuthLoginModel authLoginModel)
         {
-            var result = _authService.Login(authLoginModel);
+            var result = await _authService.Login(authLoginModel);
 
-            if (string.IsNullOrEmpty(result))
+            if (result.IsFailed)
             {
                 return BadRequest($"Email ou login errados");
             }
 
             return Ok(new
             {
-                Token = result,
+                Token = result.Value,
             });
         }
     }

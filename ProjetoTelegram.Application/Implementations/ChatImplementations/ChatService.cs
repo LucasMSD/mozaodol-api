@@ -1,6 +1,8 @@
 ﻿using Expo.Server.Client;
 using Expo.Server.Models;
+using FluentResults;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
 using ProjetoTelegram.Application.DTOs.ChatDTOs;
 using ProjetoTelegram.Application.DTOs.MessageDTOs;
@@ -8,10 +10,12 @@ using ProjetoTelegram.Application.DTOs.UserDTOs;
 using ProjetoTelegram.Application.Interfaces.ChatInterfaces;
 using ProjetoTelegram.Domain.Entities.ChatEntities;
 using ProjetoTelegram.Domain.Entities.MessageEntities;
+using ProjetoTelegram.Domain.Entities.UserEntities;
 using ProjetoTelegram.Domain.Enums;
 using ProjetoTelegram.Domain.Repositories.ChatRepositories;
 using ProjetoTelegram.Domain.Repositories.MessageRepositories;
 using ProjetoTelegram.Domain.Repositories.UserRepositories;
+using System;
 using System.Text.Json;
 
 namespace ProjetoTelegram.Application.Implementations.ChatImplementations
@@ -35,40 +39,45 @@ namespace ProjetoTelegram.Application.Implementations.ChatImplementations
             _distributedCache = distributedCache;
         }
 
-        public async Task<ObjectId> CreateChat(CreateChatModel chatModel)
+        public async Task<Result<ObjectId>> CreateChat(CreateChatModel chatModel)
         {
             var chat = new Chat
             {
                 UsersIds = chatModel.UsersIds,
             };
 
-            await _chatRepository.Insert(chat);
+            var insertResult = await _chatRepository.Insert(chat);
+            if (insertResult.IsFailed) return Result.Fail("Erro ao criar chat.").WithErrors(insertResult.Errors);
 
-            await _userRepository.AddToChat(chat.UsersIds, chat._id);
+
+            var addUserToChatResult =  await _userRepository.AddToChat(chat.UsersIds, chat._id);
+            if (addUserToChatResult.IsFailed) return Result.Fail("Erro ao incluir usuários no chat.").WithErrors(addUserToChatResult.Errors);
 
             return chat._id;
         }
 
-        public async Task<IEnumerable<ChatDto>> GetAll(ObjectId userId)
+        public async Task<Result<List<ChatDto>>> GetAll(ObjectId userId)
         {
             // todo: refatorar
-            var user = await _userRepository.Get(userId);
+            var getUserResult = await _userRepository.Get(userId);
+            if (getUserResult.IsFailed) return Result.Fail("Erro ao buscar usuário").WithErrors(getUserResult.Errors);
 
+            var getChatResult = await _chatRepository.Get(getUserResult.Value.ChatsIds);
+            if (getChatResult.IsFailed) return Result.Fail("Erro ao buscar chat").WithErrors(getChatResult.Errors);
 
-            var chats = await _chatRepository.Get(user.ChatsIds);
+            var getUsersResult = await _userRepository.Get(getChatResult.Value.SelectMany(x => x.UsersIds));
+            if (getUsersResult.IsFailed) return Result.Fail("Erro ao buscar os usuários").WithErrors(getUsersResult.Errors);
 
-            return chats.Select(x => new ChatDto
+            return getChatResult.Value.Select(chat => new ChatDto
             {
-                _id = x._id,
-                Name = CreateChatName(x.UsersIds.Where(_id => _id != userId)).Result
-            });
+                _id = chat._id,
+                Name = GenerateChatName(getUsersResult.Value.Where(user => chat.UsersIds.Contains(user._id)).ToArray())
+            }).ToList();
         }
 
-        private async Task<string> CreateChatName(IEnumerable<ObjectId> usersIds)
+        private string GenerateChatName(User[] users)
         {
             var name = "";
-
-            var users = (await _userRepository.Get(usersIds)).ToArray();
 
             for (var i = 0; i < users.Length; i++)
             {
@@ -86,15 +95,16 @@ namespace ProjetoTelegram.Application.Implementations.ChatImplementations
             return name;
         }
 
-        public async Task<(MessageDto, IEnumerable<string>)> SendMessage(NewMessageModel newMessage)
+        public async Task<Result<(MessageDto, List<string>)>> SendMessage(NewMessageModel newMessage)
         {
             // validar se o chat existe
-            var chat = await _chatRepository.Get(newMessage.ChatId);
+            var getChatResult = await _chatRepository.Get(newMessage.ChatId);
+            if (getChatResult.IsFailed) return Result.Fail("Erro ao buscar chat.").WithErrors(getChatResult.Errors);
+            if (getChatResult.Value == null) return Result.Fail("Chat não encontrado.");
 
-            if (chat == null)
-                return (null, null);
-
-            var user = await _userRepository.Get(newMessage.UserId);
+            var getUserResult = await _userRepository.Get(newMessage.UserId);
+            if (getUserResult.IsFailed) return Result.Fail("Erro ao buscar usuário.").WithErrors(getUserResult.Errors);
+            if (getUserResult.Value == null) return Result.Fail("Usuário não encontrado.");
 
             // salvar mensagem
             var message = new Message
@@ -115,41 +125,51 @@ namespace ProjetoTelegram.Application.Implementations.ChatImplementations
                 UserId = message.UserId,
                 ChatId = message.ChatId,
                 Text = message.Text,
-                UserUsername = user.Username,
+                UserUsername = getUserResult.Value.Username,
                 Status = message.Status,
                 ExternalId = message.ExternalId,
                 Timestamp = message.Timestamp.ToString("HH:mm"),
             };
 
-            var usersIds = chat.UsersIds.Where(x => x != message.UserId).Select(x => x.ToString());
+            var usersIds = getChatResult.Value.UsersIds.Where(x => x != message.UserId).Select(x => x.ToString());
 
 
-            await SendNotifications(messageDto, chat);
+            await SendNotifications(messageDto, getChatResult.Value);
 
-            return (messageDto, usersIds);
+            return (messageDto, usersIds.ToList());
         }
 
-        public async Task<IEnumerable<MessageDto>> GetMessages(ObjectId currentUserId, ObjectId chatId)
+        public async Task<Result<List<MessageDto>>> GetMessages(ObjectId currentUserId, ObjectId chatId)
         {
-            var chat = await _chatRepository.Get(chatId);
-            var users = (await _userRepository.Get(chat.UsersIds)).ToDictionary(x => x._id);
-            var messages = await _messageRepository.GetByChat(chatId);
+            var getChatResult = await _chatRepository.Get(chatId);
+            if (getChatResult.IsFailed) return Result.Fail("Erro ao buscar o chat.").WithErrors(getChatResult.Errors);
+            if (getChatResult.Value == null) return Result.Fail("Chat não encontrado.");
 
-            return messages.OrderByDescending(x => x.Timestamp).Select(x => new MessageDto
+            var getUsersResult = await _userRepository.Get(getChatResult.Value.UsersIds);
+            if (getUsersResult.IsFailed) return Result.Fail("Erro ao buscar usuários.").WithErrors(getUsersResult.Errors);
+            if (!getUsersResult.Value.Any()) return Result.Fail("Usuários do chat não encontrados.");
+
+            var getMessagesResult = await _messageRepository.GetByChat(chatId);
+            if (getMessagesResult.IsFailed) return Result.Fail("Erro ao buscar mensagens.").WithErrors(getMessagesResult.Errors);
+            if (!getMessagesResult.Value.Any()) return Result.Fail("Mensagens não encontradas.");
+
+            var usersDict = getUsersResult.Value.ToDictionary(user => user._id);
+            return getMessagesResult.Value.OrderByDescending(x => x.Timestamp).Select(message => new MessageDto
             {
-                Text = x.Text,
-                UserId = x.UserId,
-                UserUsername = users[x.UserId].Username,
-                Timestamp = x.Timestamp.ToString("HH:mm"),
-                ChatId = chat._id,
-                Status = x.Status,
-                ExternalId = string.IsNullOrEmpty(x.ExternalId) ? x._id.ToString() : x.ExternalId,
-                _id = x._id
-            });
+                Text = message.Text,
+                UserId = message.UserId,
+                UserUsername = usersDict[message.UserId].Username,
+                Timestamp = message.Timestamp.ToString("HH:mm"),
+                ChatId = getChatResult.Value._id,
+                Status = message.Status,
+                ExternalId = string.IsNullOrEmpty(message.ExternalId) ? message._id.ToString() : message.ExternalId,
+                _id = message._id
+            }).ToList();
         }
 
-        public async Task SendNotifications(MessageDto message, Chat chat)
+        public async Task<Result> SendNotifications(MessageDto message, Chat chat)
         {
+            // todo: fazer mais validações
             var chatUsersIds = chat.UsersIds.Where(x => x != message.UserId);
             var users = new List<UserState>();
 
@@ -173,15 +193,17 @@ namespace ProjetoTelegram.Application.Implementations.ChatImplementations
                 PushPriority = "high"
             };
             var result = await expoSDKClient.PushSendAsync(pushTicketReq);
+
+            return Result.Ok();
         }
 
-        public async Task<Message> SeenMessage(SeenMessageModel seenMessage)
+        public async Task<Result<Message>> SeenMessage(SeenMessageModel seenMessage)
         {
-            var message = await _messageRepository.Get(seenMessage.MessageId);
+            var getMessageResult = await _messageRepository.Get(seenMessage.MessageId);
+            if (getMessageResult.IsFailed) return Result.Fail("Erro ao buscar a mensagem.").WithErrors(getMessageResult.Errors);
 
-            await _messageRepository.UpdateStatus(message._id, MessageStatus.Seen);
-            return message;
-
+            await _messageRepository.UpdateStatus(getMessageResult.Value._id, MessageStatus.Seen);
+            return getMessageResult.Value;
         }
     }
 }

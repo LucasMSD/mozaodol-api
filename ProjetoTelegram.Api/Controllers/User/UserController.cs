@@ -23,14 +23,17 @@ namespace ProjetoTelegram.Api.Controllers.User
         [HttpGet]
         public async Task<IActionResult> ListAllUsers()
         {
-            return Ok(await _userService.GetAll());
+            var getUsersResult = await _userService.GetAll();
+
+            if (getUsersResult.IsFailed) return BadRequest(getUsersResult.Errors);
+            return Ok(getUsersResult.Value);
         }
 
         [HttpGet("current")]
         public async Task<IActionResult> GetCurrent()
         {
             var userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value;
-            return Ok(await _userService.Get(new ObjectId(userId)));
+            return Ok((await _userService.Get(new ObjectId(userId))).Value);
         }
 
 
@@ -38,21 +41,21 @@ namespace ProjetoTelegram.Api.Controllers.User
         public async Task<IActionResult> ListContacts()
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            return Ok(await _userService.GetContacts(new ObjectId(userId)));
+            return Ok((await _userService.GetContacts(new ObjectId(userId))).Value);
         }
 
         [HttpPost("contacts/add")]
         public async Task<IActionResult> AddContact([FromBody] AddContactModel addContact)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            return Ok(await _userService.AddContact(new ObjectId(userId), addContact));
+            return Ok((await _userService.AddContact(new ObjectId(userId), addContact)).Value);
         }
 
         [HttpDelete("contacts/remove/{contactId}")]
         public async Task<IActionResult> AddContact([FromRoute] ObjectId contactId)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            return Ok(await _userService.RemoveContact(new ObjectId(userId), contactId));
+            return Ok((await _userService.RemoveContact(new ObjectId(userId), contactId)).Value);
         }
 
         [HttpPut("pushToken")]

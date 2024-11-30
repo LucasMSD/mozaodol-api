@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson;
+﻿using FluentResults;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using ProjetoTelegram.Domain.Entities.ChatEntities;
 using ProjetoTelegram.Domain.Repositories.ChatRepositories;
@@ -15,19 +16,21 @@ namespace ProjetoTelegram.Infrastructure.Repositories.ChatRepositories
             _context = dbContext;
         }
 
-        public async Task<Chat> Get(ObjectId chatId)
+        public async Task<Result<Chat>> Get(ObjectId chatId)
         {
             return (await _context.Database.GetCollection<Chat>(nameof(Chat)).FindAsync(x => x._id == chatId)).FirstOrDefault();
         }
 
-        public async Task<IEnumerable<Chat>> Get(IEnumerable<ObjectId> chatsIds)
+        public async Task<Result<List<Chat>>> Get(IEnumerable<ObjectId> chatsIds)
         {
-            return (await _context.Database.GetCollection<Chat>(nameof(Chat)).FindAsync(x => chatsIds.Contains(x._id))).ToEnumerable();
+            var result = await _context.Database.GetCollection<Chat>(nameof(Chat)).FindAsync(x => chatsIds.Contains(x._id));
+            return Result.Ok(await result.ToListAsync());
         }
 
-        public async Task Insert(Chat chat)
+        public async Task<Result> Insert(Chat chat)
         {
             await _context.Database.GetCollection<Chat>(nameof(Chat)).InsertOneAsync(chat);
+            return Result.Ok();
         }
     }
 }

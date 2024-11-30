@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using FluentResults;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Bson;
 using ProjetoTelegram.Application.DTOs.AuthDTOs;
@@ -23,12 +24,18 @@ namespace ProjetoTelegram.Application.Implementations.AuthImplementations
             _jwtSettings = jwtSettings.Value;
         }
 
-        public async Task<User> Signup(AuthSignupModel signupModel)
+        public async Task<Result<User>> Signup(AuthSignupModel signupModel)
         {
+            var userExistResult = await _userRepository.Exists(signupModel.Username);
             // validar se o username já existe
-            if (await _userRepository.Exists(signupModel.Username))
+            if (userExistResult.IsFailed)
             {
-                return null;
+                return Result.Fail("Não foi possível verificar se já existe outro usuário com o mesmo Username.").WithErrors(userExistResult.Errors);
+            }
+
+            if (userExistResult.Value)
+            {
+                return Result.Fail("Username já utilizado.");
             }
 
             // salvar o novo usuário
@@ -40,16 +47,21 @@ namespace ProjetoTelegram.Application.Implementations.AuthImplementations
             });
         }
 
-        public string Login(AuthLoginModel authLoginModel)
+        public async Task<Result<string>> Login(AuthLoginModel authLoginModel)
         {
-            var user = _userRepository.GetByLogin(authLoginModel.Username, authLoginModel.Password);
+            var userResult = await _userRepository.GetByLogin(authLoginModel.Username, authLoginModel.Password);
 
-            if (user == null)
+            if (userResult.IsFailed)
             {
-                return string.Empty;
+                return Result.Fail("Erro ao tentar realizar o login.").WithErrors(userResult.Errors);
             }
 
-            return GenerateToken(user._id);
+            if (userResult.Value == null)
+            {
+                return Result.Fail("Combinação de Username e senha incorretos.");
+            }
+
+            return GenerateToken(userResult.Value._id);
         }
 
         public string GenerateToken(ObjectId userId)

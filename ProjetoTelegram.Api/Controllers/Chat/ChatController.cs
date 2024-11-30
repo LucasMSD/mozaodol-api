@@ -14,6 +14,7 @@ namespace ProjetoTelegram.Api.Controllers.Chat
     {
         private readonly IChatService _chatService;
 
+        // todo: refatorar todas as controllers
         public ChatController(IChatService chatService)
         {
             _chatService = chatService;
@@ -23,21 +24,21 @@ namespace ProjetoTelegram.Api.Controllers.Chat
         public async Task<IActionResult> List()
         {
             var userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value;
-            return Ok(await _chatService.GetAll(new ObjectId(userId)));
+            return Ok((await _chatService.GetAll(new ObjectId(userId))).Value);
         }
 
         [HttpGet("messages/{chatId}")]
         public async Task<IActionResult> ListMessages([FromRoute] ObjectId chatId)
         {
             var userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value;
-            return Ok(await _chatService.GetMessages(new ObjectId(userId), chatId));
+            return Ok((await _chatService.GetMessages(new ObjectId(userId), chatId)).Value);
         }
 
         [HttpPost("sendMessage")]
         public async Task<IActionResult> SendMessage([FromBody] NewMessageModel newMessageModel)
         {
             var userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value;
-            return Ok(await _chatService.SendMessage(newMessageModel));
+            return Ok((await _chatService.SendMessage(newMessageModel)).Value);
         }
     }
 }

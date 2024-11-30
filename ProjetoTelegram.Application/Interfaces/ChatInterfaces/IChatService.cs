@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson;
+﻿using FluentResults;
+using MongoDB.Bson;
 using ProjetoTelegram.Application.DTOs.ChatDTOs;
 using ProjetoTelegram.Application.DTOs.MessageDTOs;
 using ProjetoTelegram.Domain.Entities.ChatEntities;
@@ -8,14 +9,13 @@ namespace ProjetoTelegram.Application.Interfaces.ChatInterfaces
 {
     public interface IChatService
     {
-        Task<ObjectId> CreateChat(CreateChatModel chatModel);
+        Task<Result<ObjectId>> CreateChat(CreateChatModel chatModel);
         // todo: refatorar
-        Task<(MessageDto, IEnumerable<string>)> SendMessage(NewMessageModel newMessage);
-
-        Task<IEnumerable<ChatDto>> GetAll(ObjectId userId);
-        Task<IEnumerable<MessageDto>> GetMessages(ObjectId objectId, ObjectId chatId);
-        Task SendNotifications(MessageDto messagem, Chat chat);
+        Task<Result<(MessageDto, List<string>)>> SendMessage(NewMessageModel newMessage);
+        Task<Result<List<ChatDto>>> GetAll(ObjectId userId);
+        Task<Result<List<MessageDto>>> GetMessages(ObjectId objectId, ObjectId chatId);
+        Task<Result> SendNotifications(MessageDto messagem, Chat chat);
         // todo: refatorar
-        Task<Message> SeenMessage(SeenMessageModel seenMessage);
+        Task<Result<Message>> SeenMessage(SeenMessageModel seenMessage);
     }
 }

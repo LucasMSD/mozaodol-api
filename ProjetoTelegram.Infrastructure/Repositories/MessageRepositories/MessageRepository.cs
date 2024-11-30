@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson;
+﻿using FluentResults;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using ProjetoTelegram.Domain.Entities.MessageEntities;
 using ProjetoTelegram.Domain.Enums;
@@ -16,26 +17,30 @@ namespace ProjetoTelegram.Infrastructure.Repositories.MessageRepositories
             _context = dbContext;
         }
 
-        public async Task<Message> Get(ObjectId _id)
+        public async Task<Result<Message>> Get(ObjectId _id)
         {
             return (await _context.Database.GetCollection<Message>(nameof(Message)).FindAsync(x => x._id == _id)).FirstOrDefault();
         }
 
-        public async Task<IEnumerable<Message>> GetByChat(ObjectId chatId)
+        public async Task<Result<List<Message>>> GetByChat(ObjectId chatId)
         {
-            return (await _context.Database.GetCollection<Message>(nameof(Message)).FindAsync(x => x.ChatId == chatId)).ToEnumerable();
+            var result = await _context.Database.GetCollection<Message>(nameof(Message)).FindAsync(x => x.ChatId == chatId);
+            return Result.Ok(await result.ToListAsync());
         }
 
-        public async Task Insert(Message message)
+        public async Task<Result> Insert(Message message)
         {
             await _context.Database.GetCollection<Message>(nameof(Message)).InsertOneAsync(message);
+            return Result.Ok();
         }
 
-        public async Task UpdateStatus(ObjectId _id, MessageStatus status)
+        public async Task<Result> UpdateStatus(ObjectId _id, MessageStatus status)
         {
             await _context.Database.GetCollection<Message>(nameof(Message)).UpdateOneAsync(
                 x => x._id == _id,
                 new UpdateDefinitionBuilder<Message>().Set(x => x.Status, status));
+
+            return Result.Ok();
         }
     }
 }

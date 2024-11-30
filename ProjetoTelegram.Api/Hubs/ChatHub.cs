@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using FluentResults;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Caching.Distributed;
 using MongoDB.Bson;
@@ -58,15 +59,20 @@ namespace ProjetoTelegram.Api.Hubs
         public async Task OnSendMessage(NewMessageModel newMessage)
         {
             newMessage.UserId = new ObjectId(Context.UserIdentifier);
-            (MessageDto sendMessage, IEnumerable<string> idsToSend) = await _chatService.SendMessage(newMessage);
-            await Clients.Users(idsToSend).SendAsync("ReceiveMessage", sendMessage);
-            await Clients.User(sendMessage.UserId.ToString()).SendAsync($"MessageStatusUpdate-{newMessage.ExternalId}", MessageStatus.Sent);
+            Result<(MessageDto messageDto, List<string> userIds)> sendMessageResult = await _chatService.SendMessage(newMessage);
+
+            if (sendMessageResult.IsFailed) return;
+
+            await Clients.Users(sendMessageResult.Value.userIds).SendAsync("ReceiveMessage", sendMessageResult.Value.messageDto);
+            await Clients.User(sendMessageResult.Value.messageDto.UserId.ToString()).SendAsync($"MessageStatusUpdate-{newMessage.ExternalId}", MessageStatus.Sent);
         }
         public async Task OnSeenMessage(SeenMessageModel seenMessage)
         {
             // todo: reforar esse código
-            var message = await _chatService.SeenMessage(seenMessage);
-            await Clients.User(message.UserId.ToString()).SendAsync($"MessageStatusUpdate-{message.ExternalId}", MessageStatus.Seen);
+            var messageResult = await _chatService.SeenMessage(seenMessage);
+
+            if (messageResult.IsFailed) return;
+            await Clients.User(messageResult.Value.UserId.ToString()).SendAsync($"MessageStatusUpdate-{messageResult.Value.ExternalId}", MessageStatus.Seen);
         }
         public override async Task OnDisconnectedAsync(Exception? exception)
         {
@@ -87,12 +93,13 @@ namespace ProjetoTelegram.Api.Hubs
 
             if (string.IsNullOrEmpty(userSateJson))
             {
-                var user = await _userService.Get(new ObjectId(Context.UserIdentifier));
+                var getUserResult = await _userService.Get(new ObjectId(Context.UserIdentifier));
+                if (getUserResult.IsFailed) return;
 
                 userSateJson = JsonSerializer.Serialize(new UserState()
                 {
-                    UserId = user._id.ToString(),
-                    PushToken = user.PushToken,
+                    UserId = getUserResult.Value._id.ToString(),
+                    PushToken = getUserResult.Value.PushToken,
                     Connected = true
                 });
 
