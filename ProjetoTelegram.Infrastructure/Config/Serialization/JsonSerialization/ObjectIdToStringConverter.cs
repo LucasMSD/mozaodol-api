@@ -2,7 +2,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace ProjetoTelegram.Domain.Config.JsonConverters
+namespace ProjetoTelegram.Infrastructure.Config.Serialization.JsonSerialization
 {
     public class ObjectIdToStringConverter : JsonConverter<ObjectId>
     {
