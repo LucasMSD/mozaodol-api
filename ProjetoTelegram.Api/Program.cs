@@ -4,6 +4,12 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
 using ProjetoTelegram.Api.Hubs;
+using ProjetoTelegram.Application.Implementations.AuthImplementations;
+using ProjetoTelegram.Application.Implementations.ChatImplementations;
+using ProjetoTelegram.Application.Implementations.UserImplementations;
+using ProjetoTelegram.Application.Interfaces.AuthInterfaces;
+using ProjetoTelegram.Application.Interfaces.ChatInterfaces;
+using ProjetoTelegram.Application.Interfaces.UserInterfaces;
 using ProjetoTelegram.Domain.Config.JsonConverters;
 using ProjetoTelegram.Domain.Config.JwtConfig;
 using ProjetoTelegram.Domain.Config.MongoSettings;
@@ -11,9 +17,6 @@ using ProjetoTelegram.Domain.Repositories;
 using ProjetoTelegram.Domain.Repositories.ChatRepositories;
 using ProjetoTelegram.Domain.Repositories.MessageRepositories;
 using ProjetoTelegram.Domain.Repositories.UserRepositories;
-using ProjetoTelegram.Domain.Services.AuthServices;
-using ProjetoTelegram.Domain.Services.ChatServices;
-using ProjetoTelegram.Domain.Services.UserServices;
 using StackExchange.Redis;
 using System.Text;
 
@@ -115,7 +118,7 @@ namespace ProjetoTelegram
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            builder.Services.AddScoped<AuthService, AuthService>();
+            builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<DbContext, DbContext>();
             builder.Services.AddScoped<IUserService, UserService>();

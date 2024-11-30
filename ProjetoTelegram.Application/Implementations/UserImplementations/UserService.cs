@@ -1,11 +1,12 @@
 ﻿using Microsoft.Extensions.Caching.Distributed;
 using MongoDB.Bson;
+using ProjetoTelegram.Application.Interfaces.UserInterfaces;
 using ProjetoTelegram.Domain.Models.ContactList;
 using ProjetoTelegram.Domain.Models.User;
 using ProjetoTelegram.Domain.Repositories.UserRepositories;
 using System.Text.Json;
 
-namespace ProjetoTelegram.Domain.Services.UserServices
+namespace ProjetoTelegram.Application.Implementations.UserImplementations
 {
     public class UserService : IUserService
     {
@@ -43,7 +44,7 @@ namespace ProjetoTelegram.Domain.Services.UserServices
                 _id = user._id,
                 PushToken = user.PushToken,
             };
-        } 
+        }
 
         public async Task<IEnumerable<UserDto>> GetAll()
         {
@@ -52,7 +53,7 @@ namespace ProjetoTelegram.Domain.Services.UserServices
                 _id = x._id,
                 Username = x.Username,
                 Name = x.Name,
-                PushToken= x.PushToken,
+                PushToken = x.PushToken,
             });
         }
 

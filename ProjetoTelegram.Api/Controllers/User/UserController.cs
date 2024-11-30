@@ -1,12 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
+using ProjetoTelegram.Application.Interfaces.UserInterfaces;
 using ProjetoTelegram.Domain.Models.ContactList;
 using ProjetoTelegram.Domain.Models.User;
-using ProjetoTelegram.Domain.Services.UserServices;
 using System.Security.Claims;
 
-namespace ProjetoTelegram.Controllers.Controllers.User
+namespace ProjetoTelegram.Api.Controllers.User
 {
     [ApiController]
     [Route("[controller]")]

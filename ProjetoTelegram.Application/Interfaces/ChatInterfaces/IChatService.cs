@@ -2,7 +2,7 @@
 using ProjetoTelegram.Domain.Models.Chat;
 using ProjetoTelegram.Domain.Models.Chat.Message;
 
-namespace ProjetoTelegram.Domain.Services.ChatServices
+namespace ProjetoTelegram.Application.Interfaces.ChatInterfaces
 {
     public interface IChatService
     {

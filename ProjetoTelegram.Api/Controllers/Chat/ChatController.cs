@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
+using ProjetoTelegram.Application.Interfaces.ChatInterfaces;
 using ProjetoTelegram.Domain.Models.Chat;
-using ProjetoTelegram.Domain.Services.ChatServices;
 using System.Security.Claims;
 
-namespace ProjetoTelegram.Controllers.Controllers.Chat
+namespace ProjetoTelegram.Api.Controllers.Chat
 {
     [ApiController]
     [Route("[controller]")]

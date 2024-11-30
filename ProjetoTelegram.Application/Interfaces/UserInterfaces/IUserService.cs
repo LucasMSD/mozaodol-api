@@ -2,7 +2,7 @@
 using ProjetoTelegram.Domain.Models.ContactList;
 using ProjetoTelegram.Domain.Models.User;
 
-namespace ProjetoTelegram.Domain.Services.UserServices
+namespace ProjetoTelegram.Application.Interfaces.UserInterfaces
 {
     public interface IUserService
     {

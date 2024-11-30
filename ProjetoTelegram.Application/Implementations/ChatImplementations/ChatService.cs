@@ -1,8 +1,9 @@
 ﻿using Expo.Server.Client;
 using Expo.Server.Models;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Caching.Distributed;
 using MongoDB.Bson;
+using ProjetoTelegram.Application.Interfaces.ChatInterfaces;
+using ProjetoTelegram.Domain.Enums;
 using ProjetoTelegram.Domain.Models.Chat;
 using ProjetoTelegram.Domain.Models.Chat.Message;
 using ProjetoTelegram.Domain.Models.User;
@@ -11,7 +12,7 @@ using ProjetoTelegram.Domain.Repositories.MessageRepositories;
 using ProjetoTelegram.Domain.Repositories.UserRepositories;
 using System.Text.Json;
 
-namespace ProjetoTelegram.Domain.Services.ChatServices
+namespace ProjetoTelegram.Application.Implementations.ChatImplementations
 {
     public class ChatService : IChatService
     {
@@ -99,7 +100,7 @@ namespace ProjetoTelegram.Domain.Services.ChatServices
                 Text = newMessage.Text,
                 UserId = newMessage.UserId,
                 ChatId = newMessage.ChatId,
-                Status = Enums.MessageStatus.Sent,
+                Status = MessageStatus.Sent,
                 Timestamp = DateTime.Now,
                 ExternalId = newMessage.ExternalId
             };
@@ -157,7 +158,7 @@ namespace ProjetoTelegram.Domain.Services.ChatServices
                 users.Add(JsonSerializer.Deserialize<UserState>(userJson));
             }
 
-            var usersToPush = users.Where(x => !string.IsNullOrEmpty(x.PushToken) && (!x.Connected || (x.Connected && x.OpenedChatId != chat._id.ToString())));
+            var usersToPush = users.Where(x => !string.IsNullOrEmpty(x.PushToken) && (!x.Connected || x.Connected && x.OpenedChatId != chat._id.ToString()));
 
             var expoSDKClient = new PushApiClient();
             var pushTicketReq = new PushTicketRequest()
@@ -176,9 +177,9 @@ namespace ProjetoTelegram.Domain.Services.ChatServices
         {
             var message = await _messageRepository.Get(seenMessage.MessageId);
 
-            await _messageRepository.UpdateStatus(message._id, Enums.MessageStatus.Seen);
+            await _messageRepository.UpdateStatus(message._id, MessageStatus.Seen);
             return message;
-            
+
         }
     }
 }

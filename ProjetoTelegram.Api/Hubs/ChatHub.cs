@@ -2,12 +2,12 @@
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Caching.Distributed;
 using MongoDB.Bson;
+using ProjetoTelegram.Application.Interfaces.ChatInterfaces;
+using ProjetoTelegram.Application.Interfaces.UserInterfaces;
 using ProjetoTelegram.Domain.Enums;
 using ProjetoTelegram.Domain.Models.Chat;
 using ProjetoTelegram.Domain.Models.Chat.Message;
 using ProjetoTelegram.Domain.Models.User;
-using ProjetoTelegram.Domain.Services.ChatServices;
-using ProjetoTelegram.Domain.Services.UserServices;
 using System.Text.Json;
 
 namespace ProjetoTelegram.Api.Hubs

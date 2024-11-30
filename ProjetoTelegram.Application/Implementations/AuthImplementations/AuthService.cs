@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Bson;
+using ProjetoTelegram.Application.Interfaces.AuthInterfaces;
 using ProjetoTelegram.Domain.Config.JwtConfig;
 using ProjetoTelegram.Domain.Models.Auth;
 using ProjetoTelegram.Domain.Models.User;
@@ -9,9 +10,9 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace ProjetoTelegram.Domain.Services.AuthServices
+namespace ProjetoTelegram.Application.Implementations.AuthImplementations
 {
-    public class AuthService
+    public class AuthService : IAuthService
     {
         private readonly IUserRepository _userRepository;
         private readonly JwtSettings _jwtSettings;
