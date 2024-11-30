@@ -2,12 +2,12 @@
 using Expo.Server.Models;
 using FluentResults;
 using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
 using ProjetoTelegram.Application.DTOs.ChatDTOs;
 using ProjetoTelegram.Application.DTOs.MessageDTOs;
 using ProjetoTelegram.Application.DTOs.UserDTOs;
 using ProjetoTelegram.Application.Interfaces.ChatInterfaces;
+using ProjetoTelegram.Application.Interfaces.UserInterfaces;
 using ProjetoTelegram.Domain.Entities.ChatEntities;
 using ProjetoTelegram.Domain.Entities.MessageEntities;
 using ProjetoTelegram.Domain.Entities.UserEntities;
@@ -15,7 +15,6 @@ using ProjetoTelegram.Domain.Enums;
 using ProjetoTelegram.Domain.Repositories.ChatRepositories;
 using ProjetoTelegram.Domain.Repositories.MessageRepositories;
 using ProjetoTelegram.Domain.Repositories.UserRepositories;
-using System;
 using System.Text.Json;
 
 namespace ProjetoTelegram.Application.Implementations.ChatImplementations
@@ -24,6 +23,7 @@ namespace ProjetoTelegram.Application.Implementations.ChatImplementations
     {
         private readonly IChatRepository _chatRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IUserService _userService;
         private readonly IMessageRepository _messageRepository;
         private readonly IDistributedCache _distributedCache;
 
@@ -31,12 +31,14 @@ namespace ProjetoTelegram.Application.Implementations.ChatImplementations
             IChatRepository chatRepository,
             IMessageRepository messageRepository,
             IUserRepository userRepository,
-            IDistributedCache distributedCache)
+            IDistributedCache distributedCache,
+            IUserService userService)
         {
             _chatRepository = chatRepository;
             _messageRepository = messageRepository;
             _userRepository = userRepository;
             _distributedCache = distributedCache;
+            _userService = userService;
         }
 
         public async Task<Result<ObjectId>> CreateChat(CreateChatModel chatModel)
@@ -204,6 +206,70 @@ namespace ProjetoTelegram.Application.Implementations.ChatImplementations
 
             await _messageRepository.UpdateStatus(getMessageResult.Value._id, MessageStatus.Seen);
             return getMessageResult.Value;
+        }
+
+        public async Task OnOpenedChat(OnOpenedChatModel onOpenedChatModel, string userIdentifier)
+        {
+            var userStateJson = await _distributedCache.GetStringAsync(userIdentifier);
+            var userState = JsonSerializer.Deserialize<UserState>(userStateJson);
+
+            userState.Connected = true;
+            userState.OpenedChatId = onOpenedChatModel.ChatId.ToString();
+
+            await _distributedCache.RemoveAsync(userIdentifier);
+            await _distributedCache.SetStringAsync(userIdentifier, JsonSerializer.Serialize(userState));
+        }
+
+        public async Task OnLeftChat(string userIdentifier)
+        {
+            var userStateJson = await _distributedCache.GetStringAsync(userIdentifier);
+            var userState = JsonSerializer.Deserialize<UserState>(userStateJson);
+
+            userState.Connected = true;
+            userState.OpenedChatId = null;
+
+            await _distributedCache.RemoveAsync(userIdentifier);
+            await _distributedCache.SetStringAsync(userIdentifier, JsonSerializer.Serialize(userState));
+        }
+
+        public async Task OnDisconnected(string userId, Exception? exception)
+        {
+            var userStateJson = await _distributedCache.GetStringAsync(userId);
+
+            if (string.IsNullOrEmpty(userStateJson)) return;
+
+            var userState = JsonSerializer.Deserialize<UserState>(userStateJson);
+            userState.Connected = false;
+
+            await _distributedCache.RemoveAsync(userId);
+            await _distributedCache.SetStringAsync(userId, JsonSerializer.Serialize(userState));
+        }
+
+        public async Task OnConnected(string userId)
+        {
+            var userSateJson = await _distributedCache.GetStringAsync(userId);
+
+            if (string.IsNullOrEmpty(userSateJson))
+            {
+                var getUserResult = await _userService.Get(new ObjectId(userId));
+                if (getUserResult.IsFailed) return;
+
+                userSateJson = JsonSerializer.Serialize(new UserState()
+                {
+                    UserId = getUserResult.Value._id.ToString(),
+                    PushToken = getUserResult.Value.PushToken,
+                    Connected = true
+                });
+
+                await _distributedCache.SetStringAsync(userId, userSateJson);
+                return;
+            }
+
+            var userState = JsonSerializer.Deserialize<UserState>(userSateJson);
+            userState.Connected = true;
+
+            await _distributedCache.RemoveAsync(userId);
+            await _distributedCache.SetStringAsync(userId, JsonSerializer.Serialize(userState));
         }
     }
 }

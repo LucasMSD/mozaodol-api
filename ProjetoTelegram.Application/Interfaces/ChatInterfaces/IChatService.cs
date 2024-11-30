@@ -17,5 +17,9 @@ namespace ProjetoTelegram.Application.Interfaces.ChatInterfaces
         Task<Result> SendNotifications(MessageDto messagem, Chat chat);
         // todo: refatorar
         Task<Result<Message>> SeenMessage(SeenMessageModel seenMessage);
+        Task OnOpenedChat(OnOpenedChatModel onOpenedChatModel, string userId);
+        Task OnLeftChat(string userId);
+        Task OnDisconnected(string userId, Exception? exception);
+        Task OnConnected(string userId);
     }
 }
