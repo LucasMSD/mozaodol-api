@@ -92,7 +92,7 @@ namespace ProjetoTelegram.Application.Implementations.UserImplementations
             if (user == null)
                 return;
 
-            await _userRepository.UpdatePushToken(userId, updatePushTokenModel);
+            await _userRepository.UpdatePushToken(userId, updatePushTokenModel.PushToken);
 
             var userStateJson = await _distributedCache.GetStringAsync(userId.ToString());
 

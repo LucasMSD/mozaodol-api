@@ -2,14 +2,16 @@
 using MongoDB.Driver;
 using ProjetoTelegram.Domain.Entities.MessageEntities;
 using ProjetoTelegram.Domain.Enums;
+using ProjetoTelegram.Domain.Repositories.MessageRepositories;
+using ProjetoTelegram.Infrastructure.Contexts.MongoDBContexts;
 
-namespace ProjetoTelegram.Domain.Repositories.MessageRepositories
+namespace ProjetoTelegram.Infrastructure.Repositories.MessageRepositories
 {
     public class MessageRepository : IMessageRepository
     {
-        private readonly DbContext _context;
+        private readonly MongoDBContext _context;
 
-        public MessageRepository(DbContext dbContext)
+        public MessageRepository(MongoDBContext dbContext)
         {
             _context = dbContext;
         }

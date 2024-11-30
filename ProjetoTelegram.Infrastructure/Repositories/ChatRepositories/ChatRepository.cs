@@ -1,14 +1,16 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Driver;
 using ProjetoTelegram.Domain.Entities.ChatEntities;
+using ProjetoTelegram.Domain.Repositories.ChatRepositories;
+using ProjetoTelegram.Infrastructure.Contexts.MongoDBContexts;
 
-namespace ProjetoTelegram.Domain.Repositories.ChatRepositories
+namespace ProjetoTelegram.Infrastructure.Repositories.ChatRepositories
 {
     public class ChatRepository : IChatRepository
     {
-        private readonly DbContext _context;
+        private readonly MongoDBContext _context;
 
-        public ChatRepository(DbContext dbContext)
+        public ChatRepository(MongoDBContext dbContext)
         {
             _context = dbContext;
         }

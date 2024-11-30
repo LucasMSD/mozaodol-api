@@ -5,7 +5,6 @@ using ProjetoTelegram.Application.DTOs.AuthDTOs;
 using ProjetoTelegram.Application.Interfaces.AuthInterfaces;
 using ProjetoTelegram.Domain.Config.JwtConfig;
 using ProjetoTelegram.Domain.Entities.UserEntities;
-using ProjetoTelegram.Domain.Models.Auth;
 using ProjetoTelegram.Domain.Repositories.UserRepositories;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;

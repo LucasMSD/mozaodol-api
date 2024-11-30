@@ -1,12 +1,12 @@
 ﻿using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 
-namespace ProjetoTelegram.Domain.Repositories
+namespace ProjetoTelegram.Infrastructure.Contexts.MongoDBContexts
 {
-    public class DbContext
+    public class MongoDBContext
     {
         public IMongoDatabase Database { get; set; }
-        public DbContext(IOptions<MongoDBSettings> mongoDBSettings, IMongoClient mongoClient)
+        public MongoDBContext(IMongoClient mongoClient, IOptions<MongoDBSettings> mongoDBSettings)
         {
             Database = mongoClient.GetDatabase(mongoDBSettings.Value.DatabaseName);
             ConnectionString = mongoDBSettings.Value.ConnectionString;

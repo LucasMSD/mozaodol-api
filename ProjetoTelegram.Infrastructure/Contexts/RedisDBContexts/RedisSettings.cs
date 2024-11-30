@@ -1,6 +1,4 @@
-﻿using System.Reflection.Metadata.Ecma335;
-
-namespace ProjetoTelegram.Domain.Repositories
+﻿namespace ProjetoTelegram.Infrastructure.Contexts.RedisDBContexts
 {
     public class RedisSettings
     {

@@ -1,14 +1,16 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Driver;
 using ProjetoTelegram.Domain.Entities.UserEntities;
+using ProjetoTelegram.Domain.Repositories.UserRepositories;
+using ProjetoTelegram.Infrastructure.Contexts.MongoDBContexts;
 
-namespace ProjetoTelegram.Domain.Repositories.UserRepositories
+namespace ProjetoTelegram.Infrastructure.Repositories.UserRepositories
 {
     public class UserRepository : IUserRepository
     {
-        private readonly DbContext _context;
+        private readonly MongoDBContext _context;
 
-        public UserRepository(DbContext dbContext)
+        public UserRepository(MongoDBContext dbContext)
         {
             _context = dbContext;
         }

@@ -17,6 +17,11 @@ using ProjetoTelegram.Domain.Repositories;
 using ProjetoTelegram.Domain.Repositories.ChatRepositories;
 using ProjetoTelegram.Domain.Repositories.MessageRepositories;
 using ProjetoTelegram.Domain.Repositories.UserRepositories;
+using ProjetoTelegram.Infrastructure.Contexts.MongoDBContexts;
+using ProjetoTelegram.Infrastructure.Contexts.RedisDBContexts;
+using ProjetoTelegram.Infrastructure.Repositories.ChatRepositories;
+using ProjetoTelegram.Infrastructure.Repositories.MessageRepositories;
+using ProjetoTelegram.Infrastructure.Repositories.UserRepositories;
 using StackExchange.Redis;
 using System.Text;
 
@@ -120,7 +125,7 @@ namespace ProjetoTelegram
 
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
-            builder.Services.AddScoped<DbContext, DbContext>();
+            builder.Services.AddScoped<MongoDBContext, MongoDBContext>();
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IChatService, ChatService>();
             builder.Services.AddScoped<IChatRepository, ChatRepository>();

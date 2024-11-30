@@ -1,4 +1,4 @@
-﻿namespace ProjetoTelegram.Domain.Repositories
+﻿namespace ProjetoTelegram.Infrastructure.Contexts.MongoDBContexts
 {
     public class MongoDBSettings
     {
