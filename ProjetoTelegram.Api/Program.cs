@@ -12,8 +12,6 @@ using ProjetoTelegram.Application.Interfaces.ChatInterfaces;
 using ProjetoTelegram.Application.Interfaces.UserInterfaces;
 using ProjetoTelegram.Domain.Config.JsonConverters;
 using ProjetoTelegram.Domain.Config.JwtConfig;
-using ProjetoTelegram.Domain.Config.MongoSettings;
-using ProjetoTelegram.Domain.Repositories;
 using ProjetoTelegram.Domain.Repositories.ChatRepositories;
 using ProjetoTelegram.Domain.Repositories.MessageRepositories;
 using ProjetoTelegram.Domain.Repositories.UserRepositories;
@@ -33,7 +31,7 @@ namespace ProjetoTelegram
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            MongoSettngs.ConfigureDateSerialization();
+            MongoDBSettings.ConfigureDateSerialization();
             builder.Logging.ClearProviders();
             builder.Logging.AddConsole();
             builder.Logging.SetMinimumLevel(LogLevel.Debug);
@@ -44,8 +42,6 @@ namespace ProjetoTelegram
             builder.Services.Configure<RedisSettings>(builder.Configuration.GetSection("RedisSettings"));
             builder.Services.AddStackExchangeRedisCache(options =>
             {
-                //options.Configuration = builder.Configuration.GetSection("RedisSettings").Get<RedisSettings>().ConnectionString;
-
                 var config = builder.Configuration.GetSection("RedisSettings").Get<RedisSettings>();
                 options.ConfigurationOptions = new ConfigurationOptions
                 {
