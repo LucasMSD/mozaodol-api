@@ -11,6 +11,8 @@ using ProjetoTelegram.Application.Implementations.UserImplementations;
 using ProjetoTelegram.Application.Interfaces.AuthInterfaces;
 using ProjetoTelegram.Application.Interfaces.ChatInterfaces;
 using ProjetoTelegram.Application.Interfaces.UserInterfaces;
+using ProjetoTelegram.Application.UseCases.ChatUseCases;
+using ProjetoTelegram.Application.UseCases.UserUseCases;
 using ProjetoTelegram.Domain.Repositories.ChatRepositories;
 using ProjetoTelegram.Domain.Repositories.MessageRepositories;
 using ProjetoTelegram.Domain.Repositories.UserRepositories;
@@ -133,6 +135,14 @@ namespace ProjetoTelegram
             builder.Services.AddScoped<ITokenService, JwtTokenService>();
             builder.Services.AddScoped<INotificationService<IRealTimeNotificationMessage>, SginalRNotificationServiceServices<IRealTimeNotificationMessage, ChatHub>>();
             builder.Services.AddScoped<INotificationService<IPushNotificationMessage>, ExpoPushNotificationService<IPushNotificationMessage>>();
+
+
+            builder.Services.AddScoped<IGetCurrentUserDtoUseCase, GetCurrentUserDtoUseCase>();
+            builder.Services.AddScoped<IGetUserDtoUseByIdUseCase, GetUserDtoUseByIdUseCase>();
+            builder.Services.AddScoped<IUpdatePushTokenUseCase, UpdatePushTokenUseCase>();
+            builder.Services.AddScoped<IListUserChatsUseCase, ListUserChatsUseCase>();
+            builder.Services.AddScoped<IListChatMessagesUseCase, ListChatMessagesUseCase>();
+
 
             var app = builder.Build();
 

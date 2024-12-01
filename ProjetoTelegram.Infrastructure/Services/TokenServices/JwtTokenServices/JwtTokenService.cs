@@ -18,7 +18,7 @@ namespace ProjetoTelegram.Infrastructure.Services.TokenServices.JwtTokenServices
             _jwtSettings = jwtSettings.Value;
         }
 
-        public Result<string> GenerateToken(ObjectId userId)
+        public Result<string> GenerateToken(ObjectId userId, string userName)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_jwtSettings.SecretKey);
@@ -27,9 +27,10 @@ namespace ProjetoTelegram.Infrastructure.Services.TokenServices.JwtTokenServices
             {
                 Subject = new ClaimsIdentity(
                 [
-                    new (ClaimTypes.NameIdentifier, userId.ToString())
+                    new (ClaimTypes.NameIdentifier, userId.ToString()),
+                    new (ClaimTypes.Name, userName)
                 ]),
-                Expires = DateTime.UtcNow.AddDays(2),
+                Expires = DateTime.UtcNow.AddDays(10),
                 Issuer = _jwtSettings.Issuer,
                 Audience = _jwtSettings.Audience,
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)

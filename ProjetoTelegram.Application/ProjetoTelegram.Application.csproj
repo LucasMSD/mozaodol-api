@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <Folder Include="Interfaces\ChatInterfaces\" />
+    <Folder Include="UseCases\Auth\" />
   </ItemGroup>
 
   <ItemGroup>

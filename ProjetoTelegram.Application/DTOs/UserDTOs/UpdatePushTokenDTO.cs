@@ -1,6 +1,6 @@
 ﻿namespace ProjetoTelegram.Application.DTOs.UserDTOs
 {
-    public class UpdatePushTokenModel
+    public class UpdatePushTokenDTO
     {
         public string PushToken { get; set; }
     }

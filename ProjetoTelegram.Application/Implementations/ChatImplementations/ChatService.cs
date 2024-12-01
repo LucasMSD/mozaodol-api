@@ -8,7 +8,6 @@ using ProjetoTelegram.Application.Interfaces.ChatInterfaces;
 using ProjetoTelegram.Application.Interfaces.UserInterfaces;
 using ProjetoTelegram.Domain.Entities.ChatEntities;
 using ProjetoTelegram.Domain.Entities.MessageEntities;
-using ProjetoTelegram.Domain.Entities.UserEntities;
 using ProjetoTelegram.Domain.Enums;
 using ProjetoTelegram.Domain.Repositories.ChatRepositories;
 using ProjetoTelegram.Domain.Repositories.MessageRepositories;
@@ -67,44 +66,7 @@ namespace ProjetoTelegram.Application.Implementations.ChatImplementations
             return chat._id;
         }
 
-        public async Task<Result<List<ChatDto>>> GetAll(ObjectId userId)
-        {
-            // todo: refatorar
-            var getUserResult = await _userRepository.Get(userId);
-            if (getUserResult.IsFailed) return Result.Fail("Erro ao buscar usuário").WithErrors(getUserResult.Errors);
 
-            var getChatResult = await _chatRepository.Get(getUserResult.Value.ChatsIds);
-            if (getChatResult.IsFailed) return Result.Fail("Erro ao buscar chat").WithErrors(getChatResult.Errors);
-
-            var getUsersResult = await _userRepository.Get(getChatResult.Value.SelectMany(x => x.UsersIds));
-            if (getUsersResult.IsFailed) return Result.Fail("Erro ao buscar os usuários").WithErrors(getUsersResult.Errors);
-
-            return getChatResult.Value.Select(chat => new ChatDto
-            {
-                _id = chat._id,
-                Name = GenerateChatName(getUsersResult.Value.Where(user => chat.UsersIds.Contains(user._id)).ToArray())
-            }).ToList();
-        }
-
-        private string GenerateChatName(User[] users)
-        {
-            var name = "";
-
-            for (var i = 0; i < users.Length; i++)
-            {
-                if (i != 0)
-                {
-                    if (i == users.Length - 1)
-                        name += " e ";
-                    else
-                        name += ", ";
-                }
-
-                name += users[i].Username;
-            }
-
-            return name;
-        }
 
         public async Task<Result<MessageDto>> SendMessage(NewMessageModel newMessage)
         {

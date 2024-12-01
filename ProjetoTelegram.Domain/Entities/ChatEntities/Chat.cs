@@ -1,5 +1,6 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using ProjetoTelegram.Domain.Entities.UserEntities;
 
 namespace ProjetoTelegram.Domain.Entities.ChatEntities
 {
@@ -8,5 +9,26 @@ namespace ProjetoTelegram.Domain.Entities.ChatEntities
     {
         public ObjectId _id { get; set; }
         public IEnumerable<ObjectId> UsersIds { get; set; }
+
+
+        public static string GenerateChatName(User[] users)
+        {
+            var name = "";
+
+            for (var i = 0; i < users.Length; i++)
+            {
+                if (i != 0)
+                {
+                    if (i == users.Length - 1)
+                        name += " e ";
+                    else
+                        name += ", ";
+                }
+
+                name += users[i].Username;
+            }
+
+            return name;
+        }
     }
 }

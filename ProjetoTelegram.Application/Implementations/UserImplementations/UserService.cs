@@ -98,28 +98,5 @@ namespace ProjetoTelegram.Application.Implementations.UserImplementations
 
             return await GetContacts(getUsersResult.Value._id);
         }
-
-        public async Task<Result> UpdatePushToken(ObjectId userId, UpdatePushTokenModel updatePushTokenModel)
-        {
-            var getUsersResult = await _userRepository.Get(userId);
-            if (getUsersResult.IsFailed) return Result.Fail("Erro ao buscar lista de contatos.").WithErrors(getUsersResult.Errors);
-            if (getUsersResult.Value == null) return Result.Fail("Usuário não encontrado.");
-
-            var updateResult = await _userRepository.UpdatePushToken(userId, updatePushTokenModel.PushToken);
-            if (updateResult.IsFailed) return Result.Fail("Erro ao atualizar push token.").WithErrors(updateResult.Errors);
-
-            var userStateJson = await _distributedCache.GetStringAsync(userId.ToString());
-
-            return Result.Ok();
-
-            // todo: refatorar
-            if (string.IsNullOrEmpty(userStateJson)) return Result.Fail("");
-
-            var userState = JsonSerializer.Deserialize<UserState>(userStateJson);
-            userState.PushToken = updatePushTokenModel.PushToken;
-
-            await _distributedCache.RemoveAsync(userId.ToString());
-            await _distributedCache.SetStringAsync(userId.ToString(), JsonSerializer.Serialize(userState));
-        }
     }
 }

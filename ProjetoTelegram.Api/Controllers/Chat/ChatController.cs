@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using ProjetoTelegram.Application.DTOs.MessageDTOs;
 using ProjetoTelegram.Application.Interfaces.ChatInterfaces;
+using ProjetoTelegram.Application.UseCases.ChatUseCases;
 using System.Security.Claims;
 
 namespace ProjetoTelegram.Api.Controllers.Chat
@@ -10,7 +11,7 @@ namespace ProjetoTelegram.Api.Controllers.Chat
     [ApiController]
     [Route("[controller]")]
     [Authorize]
-    public class ChatController : ControllerBase
+    public class ChatController : BaseController
     {
         private readonly IChatService _chatService;
 
@@ -21,24 +22,24 @@ namespace ProjetoTelegram.Api.Controllers.Chat
         }
 
         [HttpGet]
-        public async Task<IActionResult> List()
+        public async Task<IActionResult> List(
+            [FromServices] IListUserChatsUseCase useCase,
+            CancellationToken cancellationToken)
         {
-            var userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value;
-            return Ok((await _chatService.GetAll(new ObjectId(userId))).Value);
+            var result = await RunAsync(useCase, null, cancellationToken);
+
+            return Ok(result.Value);
         }
 
         [HttpGet("messages/{chatId}")]
-        public async Task<IActionResult> ListMessages([FromRoute] ObjectId chatId)
+        public async Task<IActionResult> ListMessages(
+            [FromServices] IListChatMessagesUseCase useCase,
+            [FromRoute] ObjectId chatId,
+            CancellationToken cancellationToken)
         {
-            var userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value;
-            return Ok((await _chatService.GetMessages(new ObjectId(userId), chatId)).Value);
-        }
+            var result = await RunAsync(useCase, chatId, cancellationToken);
 
-        [HttpPost("sendMessage")]
-        public async Task<IActionResult> SendMessage([FromBody] NewMessageModel newMessageModel)
-        {
-            var userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value;
-            return Ok((await _chatService.SendMessage(newMessageModel)).Value);
+            return Ok(result.Value);
         }
     }
 }

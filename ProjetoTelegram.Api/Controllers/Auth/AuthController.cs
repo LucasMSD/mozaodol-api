@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ProjetoTelegram.Application.DTOs.AuthDTOs;
 using ProjetoTelegram.Application.Interfaces.AuthInterfaces;
 
 namespace ProjetoTelegram.Api.Controllers.Auth
 {
     [ApiController]
+    [AllowAnonymous]
     [Route("[controller]")]
     public class AuthController : ControllerBase
     {

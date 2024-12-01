@@ -4,6 +4,7 @@ using MongoDB.Bson;
 using ProjetoTelegram.Application.DTOs.ContactDTOs;
 using ProjetoTelegram.Application.DTOs.UserDTOs;
 using ProjetoTelegram.Application.Interfaces.UserInterfaces;
+using ProjetoTelegram.Application.UseCases.UserUseCases;
 using System.Security.Claims;
 
 namespace ProjetoTelegram.Api.Controllers.User
@@ -11,7 +12,7 @@ namespace ProjetoTelegram.Api.Controllers.User
     [ApiController]
     [Route("[controller]")]
     [Authorize]
-    public class UserController : ControllerBase
+    public class UserController : BaseController
     {
         private readonly IUserService _userService;
 
@@ -20,50 +21,29 @@ namespace ProjetoTelegram.Api.Controllers.User
             _userService = userService;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> ListAllUsers()
-        {
-            var getUsersResult = await _userService.GetAll();
-
-            if (getUsersResult.IsFailed) return BadRequest(getUsersResult.Errors);
-            return Ok(getUsersResult.Value);
-        }
-
         [HttpGet("current")]
-        public async Task<IActionResult> GetCurrent()
+        public async Task<IActionResult> GetCurrent(
+            [FromServices] IGetCurrentUserDtoUseCase useCase,
+            CancellationToken cancellationToken)
         {
-            var userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value;
-            return Ok((await _userService.Get(new ObjectId(userId))).Value);
+            var result = await RunAsync(useCase, null, cancellationToken);
+
+            if (result.IsFailed) return NotFound(result);
+
+            return Ok(result.Value);
         }
 
-
-        [HttpGet("contacts")]
-        public async Task<IActionResult> ListContacts()
-        {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            return Ok((await _userService.GetContacts(new ObjectId(userId))).Value);
-        }
-
-        [HttpPost("contacts/add")]
-        public async Task<IActionResult> AddContact([FromBody] AddContactModel addContact)
-        {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            return Ok((await _userService.AddContact(new ObjectId(userId), addContact)).Value);
-        }
-
-        [HttpDelete("contacts/remove/{contactId}")]
-        public async Task<IActionResult> AddContact([FromRoute] ObjectId contactId)
-        {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            return Ok((await _userService.RemoveContact(new ObjectId(userId), contactId)).Value);
-        }
 
         [HttpPut("pushToken")]
-        public async Task<IActionResult> UpdatePushToken([FromBody] UpdatePushTokenModel updatePushTokenModel)
+        public async Task<IActionResult> UpdatePushToken(
+            [FromServices] IUpdatePushTokenUseCase useCase,
+            [FromBody] UpdatePushTokenDTO input,
+            CancellationToken cancellationToken)
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            await _userService.UpdatePushToken(new ObjectId(userId), updatePushTokenModel);
+            var result = await RunAsync(useCase, input, cancellationToken);
+
             return Ok(new { Message = "Atualizado" });
+            
         }
     }
 }

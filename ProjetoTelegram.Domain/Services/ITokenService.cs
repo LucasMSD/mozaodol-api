@@ -5,6 +5,6 @@ namespace ProjetoTelegram.Domain.Services
 {
     public interface ITokenService
     {
-        Result<string> GenerateToken(ObjectId userId);
+        Result<string> GenerateToken(ObjectId userId, string userName);
     }
 }

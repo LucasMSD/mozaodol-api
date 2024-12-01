@@ -55,7 +55,7 @@ namespace ProjetoTelegram.Application.Implementations.AuthImplementations
                 return Result.Fail("Combinação de Username e senha incorretos.");
             }
 
-            return _tokenService.GenerateToken(userResult.Value._id);
+            return _tokenService.GenerateToken(userResult.Value._id, userResult.Value.Username);
         }
     }
 }
