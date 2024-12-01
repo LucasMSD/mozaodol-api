@@ -1,10 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
-using ProjetoTelegram.Application.DTOs.MessageDTOs;
-using ProjetoTelegram.Application.Interfaces.ChatInterfaces;
 using ProjetoTelegram.Application.UseCases.ChatUseCases;
-using System.Security.Claims;
 
 namespace ProjetoTelegram.Api.Controllers.Chat
 {
@@ -13,13 +10,6 @@ namespace ProjetoTelegram.Api.Controllers.Chat
     [Authorize]
     public class ChatController : BaseController
     {
-        private readonly IChatService _chatService;
-
-        // todo: refatorar todas as controllers
-        public ChatController(IChatService chatService)
-        {
-            _chatService = chatService;
-        }
 
         [HttpGet]
         public async Task<IActionResult> List(

@@ -5,12 +5,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
 using ProjetoTelegram.Api.Hubs;
-using ProjetoTelegram.Application.Implementations.AuthImplementations;
-using ProjetoTelegram.Application.Implementations.ChatImplementations;
-using ProjetoTelegram.Application.Implementations.UserImplementations;
-using ProjetoTelegram.Application.Interfaces.AuthInterfaces;
-using ProjetoTelegram.Application.Interfaces.ChatInterfaces;
-using ProjetoTelegram.Application.Interfaces.UserInterfaces;
+using ProjetoTelegram.Application.UseCases.Auth.AuthUseCases;
 using ProjetoTelegram.Application.UseCases.ChatUseCases;
 using ProjetoTelegram.Application.UseCases.UserUseCases;
 using ProjetoTelegram.Domain.Repositories.ChatRepositories;
@@ -125,11 +120,8 @@ namespace ProjetoTelegram
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<MongoDBContext, MongoDBContext>();
-            builder.Services.AddScoped<IUserService, UserService>();
-            builder.Services.AddScoped<IChatService, ChatService>();
             builder.Services.AddScoped<IChatRepository, ChatRepository>();
             builder.Services.AddScoped<IMessageRepository, MessageRepository>();
             builder.Services.AddScoped<ITokenService, JwtTokenService>();
@@ -143,6 +135,16 @@ namespace ProjetoTelegram
             builder.Services.AddScoped<IListUserChatsUseCase, ListUserChatsUseCase>();
             builder.Services.AddScoped<IListChatMessagesUseCase, ListChatMessagesUseCase>();
 
+            builder.Services.AddScoped<IOnConnectedUseCase, OnConnectedUseCase>();
+            builder.Services.AddScoped<IOnDisconnectedUseCase, OnDisconnectedUseCase>();
+            builder.Services.AddScoped<IOnLeftChatUseCase, OnLeftChatUseCase>();
+            builder.Services.AddScoped<IOnOpenedChatUseCase, OnOpenedChatUseCase>();
+            builder.Services.AddScoped<IOnSeenMessageUseCase, OnSeenMessageUseCase>();
+            builder.Services.AddScoped<IOnSendMessageUseCase, OnSendMessageUseCase>();
+
+
+            builder.Services.AddScoped<IAuthLoginUseCase, AuthLoginUseCase>();
+            builder.Services.AddScoped<IAuthSignupUseCase, AuthSignupUseCase>();
 
             var app = builder.Build();
 

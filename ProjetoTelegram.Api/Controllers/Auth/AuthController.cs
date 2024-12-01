@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProjetoTelegram.Application.DTOs.AuthDTOs;
-using ProjetoTelegram.Application.Interfaces.AuthInterfaces;
+using ProjetoTelegram.Application.UseCases.Auth.AuthUseCases;
 
 namespace ProjetoTelegram.Api.Controllers.Auth
 {
@@ -10,17 +10,16 @@ namespace ProjetoTelegram.Api.Controllers.Auth
     [Route("[controller]")]
     public class AuthController : ControllerBase
     {
-        private readonly IAuthService _authService;
 
-        public AuthController(IAuthService authService)
-        {
-            _authService = authService;
-        }
 
         [HttpPost("signup")]
-        public async Task<IActionResult> Signup([FromBody] AuthSignupModel signupModel)
+        public async Task<IActionResult> Signup(
+            [FromServices] IAuthSignupUseCase useCase,
+            [FromBody] AuthSignupModel signupModel,
+            CancellationToken cancellationToken)
         {
-            var result = await _authService.Signup(signupModel);
+
+            var result = await useCase.Handle(signupModel, cancellationToken);
 
             if (result.IsFailed)
             {
@@ -31,9 +30,12 @@ namespace ProjetoTelegram.Api.Controllers.Auth
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] AuthLoginModel authLoginModel)
+        public async Task<IActionResult> Login(
+            [FromServices] IAuthLoginUseCase useCase,
+            [FromBody] AuthLoginModel authLoginModel,
+            CancellationToken cancellationToken)
         {
-            var result = await _authService.Login(authLoginModel);
+            var result = await useCase.Handle(authLoginModel, cancellationToken);
 
             if (result.IsFailed)
             {

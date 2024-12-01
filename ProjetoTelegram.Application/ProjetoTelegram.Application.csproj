@@ -7,11 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Interfaces\ChatInterfaces\" />
-    <Folder Include="UseCases\Auth\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\ProjetoTelegram.Domain\ProjetoTelegram.Domain.csproj" />
   </ItemGroup>
 

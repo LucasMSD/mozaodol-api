@@ -2,7 +2,7 @@
 
 namespace ProjetoTelegram.Application.DTOs.ChatDTOs
 {
-    public class OnOpenedChatModel
+    public class OnOpenedChatDTO
     {
         public ObjectId ChatId { get; set; }
     }

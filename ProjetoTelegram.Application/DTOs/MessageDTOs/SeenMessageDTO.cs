@@ -1,8 +1,8 @@
 ﻿using MongoDB.Bson;
 
-namespace ProjetoTelegram.Application.DTOs.ChatDTOs
+namespace ProjetoTelegram.Application.DTOs.MessageDTOs
 {
-    public class SeenMessageModel
+    public class SeenMessageDTO
     {
         public ObjectId MessageId { get; set; }
     }

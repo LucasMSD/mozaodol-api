@@ -1,47 +1,58 @@
-﻿using FluentResults;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.SignalR;
-using MongoDB.Bson;
+﻿using Microsoft.AspNetCore.Authorization;
 using ProjetoTelegram.Application.DTOs.ChatDTOs;
 using ProjetoTelegram.Application.DTOs.MessageDTOs;
-using ProjetoTelegram.Application.Interfaces.ChatInterfaces;
-using ProjetoTelegram.Application.Interfaces.UserInterfaces;
-using ProjetoTelegram.Domain.Enums;
+using ProjetoTelegram.Application.UseCases.ChatUseCases;
 
 namespace ProjetoTelegram.Api.Hubs
 {
     [Authorize]
-    public class ChatHub : Hub
+    public class ChatHub : BaseHub
     {
-        private readonly IChatService _chatService;
-        public ChatHub(IChatService chatService)
+        private readonly IOnOpenedChatUseCase _onOpenedChatUseCase;
+        private readonly IOnLeftChatUseCase _onLeftChatUseCase;
+        private readonly IOnSendMessageUseCase _onSendMessageUseCase;
+        private readonly IOnSeenMessageUseCase _onSeenMessageUseCase;
+        private readonly IOnDisconnectedUseCase _onDisconnectedUseCase;
+        private readonly IOnConnectedUseCase _onConnectedUseCase;
+
+        public ChatHub(
+            IOnOpenedChatUseCase onOpenedChatUseCase,
+            IOnLeftChatUseCase onLeftChatUseCase,
+            IOnSendMessageUseCase onSendMessageUseCase,
+            IOnSeenMessageUseCase onSeenMessageUseCase,
+            IOnDisconnectedUseCase onDisconnectedUseCase,
+            IOnConnectedUseCase onConnectedUseCase)
         {
-            _chatService = chatService;
+            _onOpenedChatUseCase = onOpenedChatUseCase;
+            _onLeftChatUseCase = onLeftChatUseCase;
+            _onSendMessageUseCase = onSendMessageUseCase;
+            _onSeenMessageUseCase = onSeenMessageUseCase;
+            _onDisconnectedUseCase = onDisconnectedUseCase;
+            _onConnectedUseCase = onConnectedUseCase;
         }
 
-        public async Task OnOpenedChat(OnOpenedChatModel onOpenedChatModel)
-            => await _chatService.OnOpenedChat(onOpenedChatModel, Context.UserIdentifier);
+        public async Task OnOpenedChat(OnOpenedChatDTO input)
+            => await RunAsync(_onOpenedChatUseCase, input);
 
 
         public async Task OnLeftChat()
-            => await _chatService.OnLeftChat(Context.UserIdentifier);
+            => await RunAsync(_onLeftChatUseCase, null);
 
-        public async Task CreateChat(CreateChatModel chatModel)
-            => await _chatService.CreateChat(chatModel, Context.UserIdentifier);
+        public async Task OnSendMessage(
+            SendMessageDTO input)
+            => await RunAsync(_onSendMessageUseCase, input);
 
-        public async Task OnSendMessage(NewMessageModel newMessage)
-        {
-            newMessage.UserId = new ObjectId(Context.UserIdentifier);
-            await _chatService.SendMessage(newMessage);
-        }
-        public async Task OnSeenMessage(SeenMessageModel seenMessage)
-            => await _chatService.SeenMessage(seenMessage, Context.UserIdentifier);
+
+        public async Task OnSeenMessage(
+            SeenMessageDTO input)
+            => await RunAsync(_onSeenMessageUseCase, input);
 
         
-        public override async Task OnDisconnectedAsync(Exception? exception)
-            => await _chatService.OnDisconnected(Context.UserIdentifier, exception);
+        public override async Task OnDisconnectedAsync(
+            Exception? exception)
+            => await RunAsync(_onDisconnectedUseCase, exception);
 
         public override async Task OnConnectedAsync()
-            => await _chatService.OnConnected(Context.UserIdentifier);
+            => await RunAsync(_onConnectedUseCase, null);
     }
 }

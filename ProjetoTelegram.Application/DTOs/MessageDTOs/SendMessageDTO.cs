@@ -2,9 +2,10 @@
 
 namespace ProjetoTelegram.Application.DTOs.MessageDTOs
 {
-    public class SendMessageModel
+    public class SendMessageDTO
     {
-        public MessageDto Message { get; set; }
-        public IEnumerable<ObjectId> UsersIds { get; set; }
+        public string Text { get; set; }
+        public ObjectId ChatId { get; set; }
+        public string ExternalId { get; set; }
     }
 }

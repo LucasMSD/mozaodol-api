@@ -1,11 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Bson;
-using ProjetoTelegram.Application.DTOs.ContactDTOs;
 using ProjetoTelegram.Application.DTOs.UserDTOs;
-using ProjetoTelegram.Application.Interfaces.UserInterfaces;
 using ProjetoTelegram.Application.UseCases.UserUseCases;
-using System.Security.Claims;
 
 namespace ProjetoTelegram.Api.Controllers.User
 {
@@ -14,12 +10,6 @@ namespace ProjetoTelegram.Api.Controllers.User
     [Authorize]
     public class UserController : BaseController
     {
-        private readonly IUserService _userService;
-
-        public UserController(IUserService userService)
-        {
-            _userService = userService;
-        }
 
         [HttpGet("current")]
         public async Task<IActionResult> GetCurrent(
