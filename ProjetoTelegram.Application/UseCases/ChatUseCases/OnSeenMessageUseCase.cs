@@ -27,7 +27,7 @@ namespace ProjetoTelegram.Application.UseCases.ChatUseCases
             if (getMessageResult.IsFailed) return Result.Fail("Erro ao buscar a mensagem.").WithErrors(getMessageResult.Errors);
             await _messageRepository.UpdateStatus(getMessageResult.Value._id, MessageStatus.Seen);
 
-            await _realTimeNotificationService.Notify([User.Id.ToString()], new RealTimeNotificationMessage
+            await _realTimeNotificationService.Notify([getMessageResult.Value.UserId.ToString()], new RealTimeNotificationMessage
             {
                 ChannelId = $"MessageStatusUpdate-{getMessageResult.Value.ExternalId}",
                 Content = MessageStatus.Seen
