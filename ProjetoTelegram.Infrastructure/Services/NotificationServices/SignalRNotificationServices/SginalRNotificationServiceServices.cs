@@ -16,6 +16,10 @@ namespace ProjetoTelegram.Infrastructure.Services.NotificationServices.SignalRNo
         }
 
         public async Task Notify(IEnumerable<string> usersToSend, TMessage notification)
-            => await _hubContext.Clients.Users(usersToSend).SendAsync(notification.ChannelId, notification.Content);
+        {
+            var clients = usersToSend.Any() ? _hubContext.Clients.Users(usersToSend) : _hubContext.Clients.All;
+
+            await clients.SendAsync(notification.ChannelId, notification.Content);
+        }
     }
 }

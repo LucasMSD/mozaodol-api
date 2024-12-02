@@ -14,6 +14,7 @@ namespace ProjetoTelegram.Api.Hubs
         private readonly IOnSeenMessageUseCase _onSeenMessageUseCase;
         private readonly IOnDisconnectedUseCase _onDisconnectedUseCase;
         private readonly IOnConnectedUseCase _onConnectedUseCase;
+        private readonly IOnTypingUseCase _onTypingUseCase;
 
         public ChatHub(
             IOnOpenedChatUseCase onOpenedChatUseCase,
@@ -21,7 +22,8 @@ namespace ProjetoTelegram.Api.Hubs
             IOnSendMessageUseCase onSendMessageUseCase,
             IOnSeenMessageUseCase onSeenMessageUseCase,
             IOnDisconnectedUseCase onDisconnectedUseCase,
-            IOnConnectedUseCase onConnectedUseCase)
+            IOnConnectedUseCase onConnectedUseCase,
+            IOnTypingUseCase onTypingUseCase)
         {
             _onOpenedChatUseCase = onOpenedChatUseCase;
             _onLeftChatUseCase = onLeftChatUseCase;
@@ -29,10 +31,16 @@ namespace ProjetoTelegram.Api.Hubs
             _onSeenMessageUseCase = onSeenMessageUseCase;
             _onDisconnectedUseCase = onDisconnectedUseCase;
             _onConnectedUseCase = onConnectedUseCase;
+            _onTypingUseCase = onTypingUseCase;
         }
 
         public async Task OnOpenedChat(OnOpenedChatDTO input)
             => await RunAsync(_onOpenedChatUseCase, input);
+
+
+        public async Task OnTyping(
+            OnTypingDTO input)
+            => await RunAsync(_onTypingUseCase, input);
 
 
         public async Task OnLeftChat()

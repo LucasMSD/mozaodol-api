@@ -145,6 +145,7 @@ namespace ProjetoTelegram
 
             builder.Services.AddScoped<IAuthLoginUseCase, AuthLoginUseCase>();
             builder.Services.AddScoped<IAuthSignupUseCase, AuthSignupUseCase>();
+            builder.Services.AddScoped<IOnTypingUseCase, OnTypingUseCase>();
 
             var app = builder.Build();
 
