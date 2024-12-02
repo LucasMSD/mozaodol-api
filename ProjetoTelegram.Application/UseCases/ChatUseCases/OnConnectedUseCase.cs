@@ -3,6 +3,8 @@ using Microsoft.Extensions.Caching.Distributed;
 using MongoDB.Bson;
 using ProjetoTelegram.Application.DTOs.UserDTOs;
 using ProjetoTelegram.Application.UseCases.UserUseCases;
+using ProjetoTelegram.Domain.Repositories.ChatRepositories;
+using ProjetoTelegram.Domain.Services;
 using System.Text.Json;
 
 namespace ProjetoTelegram.Application.UseCases.ChatUseCases
@@ -13,13 +15,19 @@ namespace ProjetoTelegram.Application.UseCases.ChatUseCases
     {
         private readonly IDistributedCache _distributedCache;
         private readonly IGetUserDtoUseByIdUseCase _getUserDtoUseByIdUseCase;
+        private readonly IChatRepository _chatRepository;
+        private readonly INotificationService<IRealTimeNotificationMessage> _notificationService;
 
         public OnConnectedUseCase(
             IDistributedCache distributedCache,
-            IGetUserDtoUseByIdUseCase getUserDtoUseByIdUseCase)
+            IGetUserDtoUseByIdUseCase getUserDtoUseByIdUseCase,
+            INotificationService<IRealTimeNotificationMessage> notificationService,
+            IChatRepository chatRepository)
         {
             _distributedCache = distributedCache;
             _getUserDtoUseByIdUseCase = getUserDtoUseByIdUseCase;
+            _notificationService = notificationService;
+            _chatRepository = chatRepository;
         }
 
         public override async Task<object?> Handle(object? input, CancellationToken cancellationToken)
@@ -47,6 +55,12 @@ namespace ProjetoTelegram.Application.UseCases.ChatUseCases
 
             await _distributedCache.RemoveAsync(userIdString);
             await _distributedCache.SetStringAsync(userIdString, JsonSerializer.Serialize(userState));
+
+            await _notificationService.Notify([], new RealTimeNotificationMessage
+            {
+                ChannelId = "UserOnlineStatus",
+                Content = true
+            });
 
             return null;
         }
