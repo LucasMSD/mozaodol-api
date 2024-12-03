@@ -1,6 +1,5 @@
 ﻿using FluentResults;
 using Microsoft.Extensions.Caching.Distributed;
-using ProjetoTelegram.Application.DTOs.ChatDTOs;
 using ProjetoTelegram.Application.DTOs.MessageDTOs;
 using ProjetoTelegram.Application.DTOs.UserDTOs;
 using ProjetoTelegram.Domain.Entities.ChatEntities;
@@ -21,16 +20,16 @@ namespace ProjetoTelegram.Application.UseCases.ChatUseCases
         private readonly IChatRepository _chatRepository;
         private readonly IUserRepository _userRepository;
         private readonly IMessageRepository _messageRepository;
-        private readonly INotificationService<IRealTimeNotificationMessage> _realTimeNotificationService;
-        private readonly INotificationService<IPushNotificationMessage> _pushNotificationService;
+        private readonly IRealTimeNotificationService _realTimeNotificationService;
+        private readonly IPushNotificationService _pushNotificationService;
         private readonly IDistributedCache _distributedCache;
 
         public OnSendMessageUseCase(
             IChatRepository chatRepository,
             IUserRepository userRepository,
             IMessageRepository messageRepository,
-            INotificationService<IRealTimeNotificationMessage> realTimeNotificationService,
-            INotificationService<IPushNotificationMessage> pushNotificationService,
+            IRealTimeNotificationService realTimeNotificationService,
+            IPushNotificationService pushNotificationService,
             IDistributedCache distributedCache)
         {
             _chatRepository = chatRepository;

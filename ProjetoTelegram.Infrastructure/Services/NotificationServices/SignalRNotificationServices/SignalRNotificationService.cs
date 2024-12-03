@@ -3,19 +3,18 @@ using ProjetoTelegram.Domain.Services;
 
 namespace ProjetoTelegram.Infrastructure.Services.NotificationServices.SignalRNotificationServices
 {
-    public class SginalRNotificationServiceServices<TMessage, THub> : IRealTimeNotificationService<TMessage>
-        where TMessage : IRealTimeNotificationMessage
+    public class SignalRNotificationService<THub> : IRealTimeNotificationService
         where THub : Hub
     {
         private readonly IHubContext<THub> _hubContext;
 
-        public SginalRNotificationServiceServices(
+        public SignalRNotificationService(
             IHubContext<THub> hubContext)
         {
             _hubContext = hubContext;
         }
 
-        public async Task Notify(IEnumerable<string> usersToSend, TMessage notification)
+        public async Task Notify(IEnumerable<string> usersToSend, IRealTimeNotificationMessage notification)
         {
             var clients = usersToSend.Any() ? _hubContext.Clients.Users(usersToSend) : _hubContext.Clients.All;
 

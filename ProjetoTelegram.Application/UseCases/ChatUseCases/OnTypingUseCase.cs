@@ -10,11 +10,11 @@ namespace ProjetoTelegram.Application.UseCases.ChatUseCases
         IOnTypingUseCase
     {
         private readonly IChatRepository _chatRepository;
-        private readonly INotificationService<IRealTimeNotificationMessage> _realTimeNotificationService;
+        private readonly IRealTimeNotificationService _realTimeNotificationService;
 
         public OnTypingUseCase(
             IChatRepository chatRepository,
-            INotificationService<IRealTimeNotificationMessage> realTimeNotificationService)
+            IRealTimeNotificationService realTimeNotificationService)
         {
             _chatRepository = chatRepository;
             _realTimeNotificationService = realTimeNotificationService;
