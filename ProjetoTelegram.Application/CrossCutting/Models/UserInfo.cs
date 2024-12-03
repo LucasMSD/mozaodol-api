@@ -6,5 +6,6 @@ namespace ProjetoTelegram.Application.CrossCutting.Models
     {
         public ObjectId Id { get; set; }
         public string Username { get; set; }
+        public string Connection { get; set; }
     }
 }

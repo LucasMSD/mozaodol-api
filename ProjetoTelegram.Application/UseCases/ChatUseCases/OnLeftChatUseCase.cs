@@ -39,7 +39,7 @@ namespace ProjetoTelegram.Application.UseCases.ChatUseCases
             await _distributedCache.RemoveAsync(userIdString);
             await _distributedCache.SetStringAsync(userIdString, JsonSerializer.Serialize(userState));
 
-            await _realTimeNotificationService.Notify([], new RealTimeNotificationMessage
+            await _realTimeNotificationService.NotifyExcept(User.Connection, new RealTimeNotificationMessage
             {
                 ChannelId = "UserOnlineStatus",
                 Content = false
