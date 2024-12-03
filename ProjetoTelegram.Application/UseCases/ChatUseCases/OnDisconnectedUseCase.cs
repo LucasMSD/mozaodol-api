@@ -14,12 +14,12 @@ namespace ProjetoTelegram.Application.UseCases.ChatUseCases
     {
         private readonly IDistributedCache _distributedCache;
         private readonly IChatRepository _chatRepository;
-        private readonly INotificationService<IRealTimeNotificationMessage> _notificationService;
+        private readonly IRealTimeNotificationService _notificationService;
 
         public OnDisconnectedUseCase(
             IDistributedCache distributedCache,
             IChatRepository chatRepository,
-            INotificationService<IRealTimeNotificationMessage> notificationService)
+            IRealTimeNotificationService notificationService)
         {
             _distributedCache = distributedCache;
             _chatRepository = chatRepository;

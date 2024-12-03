@@ -11,11 +11,11 @@ namespace ProjetoTelegram.Application.UseCases.ChatUseCases
         IOnSeenMessageUseCase
     {
         private readonly IMessageRepository _messageRepository;
-        private readonly INotificationService<IRealTimeNotificationMessage> _realTimeNotificationService;
+        private readonly IRealTimeNotificationService _realTimeNotificationService;
 
         public OnSeenMessageUseCase(
             IMessageRepository messageRepository,
-            INotificationService<IRealTimeNotificationMessage> realTimeNotificationService)
+            IRealTimeNotificationService realTimeNotificationService)
         {
             _messageRepository = messageRepository;
             _realTimeNotificationService = realTimeNotificationService;

@@ -2,6 +2,6 @@
 {
     public interface INotificationService<TMessage> where TMessage : INotificationMessage
     {
-        Task Notify(IEnumerable<string> usersToSend, TMessage notification);
+        Task Notify(IEnumerable<string> usersIdsToSend, TMessage notification);
     }
 }

@@ -14,12 +14,12 @@ namespace ProjetoTelegram.Application.UseCases.ChatUseCases
     {
         private readonly IDistributedCache _distributedCache;
         private readonly IChatRepository _chatRepository;
-        private readonly INotificationService<IRealTimeNotificationMessage> _realTimeNotificationService;
+        private readonly IRealTimeNotificationService _realTimeNotificationService;
 
         public OnLeftChatUseCase(
             IDistributedCache distributedCache,
             IChatRepository chatRepository,
-            INotificationService<IRealTimeNotificationMessage> realTimeNotificationService)
+            IRealTimeNotificationService realTimeNotificationService)
         {
             _distributedCache = distributedCache;
             _chatRepository = chatRepository;
@@ -39,7 +39,7 @@ namespace ProjetoTelegram.Application.UseCases.ChatUseCases
             await _distributedCache.RemoveAsync(userIdString);
             await _distributedCache.SetStringAsync(userIdString, JsonSerializer.Serialize(userState));
 
-            await _realTimeNotificationService.Notify([], new RealTimeNotificationMessage
+            await _realTimeNotificationService.NotifyExcept(User.Connection, new RealTimeNotificationMessage
             {
                 ChannelId = "UserOnlineStatus",
                 Content = false

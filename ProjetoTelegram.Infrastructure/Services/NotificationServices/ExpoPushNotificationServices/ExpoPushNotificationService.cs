@@ -4,11 +4,9 @@ using ProjetoTelegram.Domain.Services;
 
 namespace ProjetoTelegram.Infrastructure.Services.NotificationServices.ExpoPushNotificationServices
 {
-    public class ExpoPushNotificationService<TMessage> : IPushNotificationService<TMessage>
-        where TMessage : IPushNotificationMessage
+    public class ExpoPushNotificationService : IPushNotificationService
     {
-
-        public async Task Notify(IEnumerable<string> usersToSend, TMessage notification)
+        public async Task Notify(IEnumerable<string> usersToSend, IPushNotificationMessage notification)
         {
             var expoSDKClient = new PushApiClient();
             var pushTicketReq = new PushTicketRequest()
