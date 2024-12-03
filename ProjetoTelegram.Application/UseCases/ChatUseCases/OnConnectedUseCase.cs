@@ -60,6 +60,8 @@ namespace ProjetoTelegram.Application.UseCases.ChatUseCases
             await _distributedCache.RemoveAsync(userIdString);
             await _distributedCache.SetStringAsync(userIdString, JsonSerializer.Serialize(userState));
 
+            if (string.IsNullOrEmpty(userState.OpenedChatId)) return null;
+
             var user = await _userRepository.Get(User.Id);
             var chats = user.Value.ChatsIds.Select(x => x.ToString());
             await _realTimeNotificationService.AddConnectionToGroup(User.Connection, chats);
