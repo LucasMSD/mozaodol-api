@@ -25,6 +25,7 @@ namespace ProjetoTelegram.Application.UseCases.ChatUseCases
             await _realTimeNotificationService.NotifyGroupExcept(input.ChatId.ToString(), User.Connection, new RealTimeNotificationMessage
             {
                 ChannelId = "UserTypingStatus",
+                Content = input.IsTypyng,
             });
 
             return null;
