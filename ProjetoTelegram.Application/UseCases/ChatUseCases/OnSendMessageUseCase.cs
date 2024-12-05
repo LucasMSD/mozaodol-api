@@ -84,7 +84,7 @@ namespace ProjetoTelegram.Application.UseCases.ChatUseCases
                 ChannelId = "ReceiveMessage",
                 Content = messageDto
             });
-            await _realTimeNotificationService.Notify(User.Connection, new RealTimeNotificationMessage
+            await _realTimeNotificationService.Notify(User.Id.ToString(), new RealTimeNotificationMessage
             {
                 ChannelId = $"MessageStatusUpdate-{input.ExternalId}",
                 Content = MessageStatus.Sent

@@ -63,6 +63,12 @@ namespace ProjetoTelegram.Application.UseCases.ChatUseCases
             var user = await _userRepository.Get(User.Id);
             var chats = user.Value.ChatsIds.Select(x => x.ToString());
             await _realTimeNotificationService.AddConnectionToGroup(User.Connection, chats);
+            if (string.IsNullOrEmpty(userState.OpenedChatId)) return null;
+            await _realTimeNotificationService.NotifyGroupExcept(userState.OpenedChatId, User.Connection, new RealTimeNotificationMessage
+            {
+                ChannelId = "UserOnlineStatus",
+                Content = true
+            });
 
             return null;
         }
