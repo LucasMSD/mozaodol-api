@@ -11,11 +11,11 @@ namespace ProjetoTelegram.Application.UseCases.ChatUseCases
         IOnSeenMessageUseCase
     {
         private readonly IMessageRepository _messageRepository;
-        private readonly INotificationService<IRealTimeNotificationMessage> _realTimeNotificationService;
+        private readonly IRealTimeNotificationService _realTimeNotificationService;
 
         public OnSeenMessageUseCase(
             IMessageRepository messageRepository,
-            INotificationService<IRealTimeNotificationMessage> realTimeNotificationService)
+            IRealTimeNotificationService realTimeNotificationService)
         {
             _messageRepository = messageRepository;
             _realTimeNotificationService = realTimeNotificationService;
@@ -27,7 +27,7 @@ namespace ProjetoTelegram.Application.UseCases.ChatUseCases
             if (getMessageResult.IsFailed) return Result.Fail("Erro ao buscar a mensagem.").WithErrors(getMessageResult.Errors);
             await _messageRepository.UpdateStatus(getMessageResult.Value._id, MessageStatus.Seen);
 
-            await _realTimeNotificationService.Notify([User.Id.ToString()], new RealTimeNotificationMessage
+            await _realTimeNotificationService.Notify([getMessageResult.Value.UserId.ToString()], new RealTimeNotificationMessage
             {
                 ChannelId = $"MessageStatusUpdate-{getMessageResult.Value.ExternalId}",
                 Content = MessageStatus.Seen

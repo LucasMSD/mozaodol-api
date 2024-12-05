@@ -125,8 +125,9 @@ namespace ProjetoTelegram
             builder.Services.AddScoped<IChatRepository, ChatRepository>();
             builder.Services.AddScoped<IMessageRepository, MessageRepository>();
             builder.Services.AddScoped<ITokenService, JwtTokenService>();
-            builder.Services.AddScoped<INotificationService<IRealTimeNotificationMessage>, SginalRNotificationServiceServices<IRealTimeNotificationMessage, ChatHub>>();
-            builder.Services.AddScoped<INotificationService<IPushNotificationMessage>, ExpoPushNotificationService<IPushNotificationMessage>>();
+            
+            builder.Services.AddScoped<IRealTimeNotificationService, SignalRNotificationService<ChatHub>>();
+            builder.Services.AddScoped<IPushNotificationService, ExpoPushNotificationService>();
 
 
             builder.Services.AddScoped<IGetCurrentUserDtoUseCase, GetCurrentUserDtoUseCase>();
@@ -145,6 +146,7 @@ namespace ProjetoTelegram
 
             builder.Services.AddScoped<IAuthLoginUseCase, AuthLoginUseCase>();
             builder.Services.AddScoped<IAuthSignupUseCase, AuthSignupUseCase>();
+            builder.Services.AddScoped<IOnTypingUseCase, OnTypingUseCase>();
 
             var app = builder.Build();
 

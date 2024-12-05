@@ -10,4 +10,4 @@ RUN dotnet publish ProjetoTelegram.sln -o out
 
 WORKDIR ./out
 
-ENTRYPOINT ["dotnet", "ProjetoTelegram.dll"]
+ENTRYPOINT ["dotnet", "ProjetoTelegram.Api.dll"]

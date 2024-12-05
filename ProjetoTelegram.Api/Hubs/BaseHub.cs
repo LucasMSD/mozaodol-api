@@ -17,6 +17,7 @@ namespace ProjetoTelegram.Api.Hubs
             {
                 Id = new ObjectId(Context.UserIdentifier),
                 Username = userName?.Value ?? string.Empty,
+                Connection = Context.ConnectionId
             };
 
             return userInfo;

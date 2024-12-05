@@ -3,6 +3,9 @@ using Microsoft.Extensions.Caching.Distributed;
 using MongoDB.Bson;
 using ProjetoTelegram.Application.DTOs.UserDTOs;
 using ProjetoTelegram.Application.UseCases.UserUseCases;
+using ProjetoTelegram.Domain.Repositories.ChatRepositories;
+using ProjetoTelegram.Domain.Repositories.UserRepositories;
+using ProjetoTelegram.Domain.Services;
 using System.Text.Json;
 
 namespace ProjetoTelegram.Application.UseCases.ChatUseCases
@@ -13,13 +16,22 @@ namespace ProjetoTelegram.Application.UseCases.ChatUseCases
     {
         private readonly IDistributedCache _distributedCache;
         private readonly IGetUserDtoUseByIdUseCase _getUserDtoUseByIdUseCase;
+        private readonly IChatRepository _chatRepository;
+        private readonly IRealTimeNotificationService _realTimeNotificationService;
+        private readonly IUserRepository  _userRepository;
 
         public OnConnectedUseCase(
             IDistributedCache distributedCache,
-            IGetUserDtoUseByIdUseCase getUserDtoUseByIdUseCase)
+            IGetUserDtoUseByIdUseCase getUserDtoUseByIdUseCase,
+            IRealTimeNotificationService realTimeNotificationService,
+            IChatRepository chatRepository,
+            IUserRepository userRepository)
         {
             _distributedCache = distributedCache;
             _getUserDtoUseByIdUseCase = getUserDtoUseByIdUseCase;
+            _realTimeNotificationService = realTimeNotificationService;
+            _chatRepository = chatRepository;
+            _userRepository = userRepository;
         }
 
         public override async Task<object?> Handle(object? input, CancellationToken cancellationToken)
@@ -47,6 +59,10 @@ namespace ProjetoTelegram.Application.UseCases.ChatUseCases
 
             await _distributedCache.RemoveAsync(userIdString);
             await _distributedCache.SetStringAsync(userIdString, JsonSerializer.Serialize(userState));
+
+            var user = await _userRepository.Get(User.Id);
+            var chats = user.Value.ChatsIds.Select(x => x.ToString());
+            await _realTimeNotificationService.AddConnectionToGroup(User.Connection, chats);
 
             return null;
         }
