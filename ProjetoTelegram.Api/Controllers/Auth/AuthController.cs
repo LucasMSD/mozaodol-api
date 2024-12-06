@@ -10,8 +10,6 @@ namespace ProjetoTelegram.Api.Controllers.Auth
     [Route("[controller]")]
     public class AuthController : ControllerBase
     {
-
-
         [HttpPost("signup")]
         public async Task<IActionResult> Signup(
             [FromServices] IAuthSignupUseCase useCase,
@@ -23,10 +21,9 @@ namespace ProjetoTelegram.Api.Controllers.Auth
 
             if (result.IsFailed)
             {
-                return BadRequest($"Usuário {signupModel.Username} já existe");
+                return BadRequest($"Usuário já existe");
             }
-
-            return Ok(result.Value);
+            return Created((string?)null, result.Value);
         }
 
         [HttpPost("login")]
@@ -39,7 +36,7 @@ namespace ProjetoTelegram.Api.Controllers.Auth
 
             if (result.IsFailed)
             {
-                return BadRequest($"Email ou login errados");
+                return Unauthorized($"Email ou login errados");
             }
 
             return Ok(new
