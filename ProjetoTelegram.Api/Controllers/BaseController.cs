@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using ProjetoTelegram.Application.CrossCutting.Models;
 using ProjetoTelegram.Application.UseCases;
+using ProjetoTelegram.Infrastructure.Extensions.Results;
 using System.Security.Authentication;
 using System.Security.Claims;
 
@@ -28,10 +29,10 @@ namespace ProjetoTelegram.Api.Controllers
             };
         }
 
-        public virtual async Task<TResponse> RunAsync<TInput, TResponse>(IUseCase<TInput, TResponse> useCase, TInput input, CancellationToken cancellationToken)
+        public virtual async Task<IActionResult> RunAsync<TInput, TResponse>(IUseCase<TInput, TResponse> useCase, TInput input, CancellationToken cancellationToken)
         {
             useCase.User = GetUser();
-            return await useCase.Handle(input, cancellationToken);
+            return (await useCase.Handle(input, cancellationToken)).ToActionResult();
         }
     }
 }

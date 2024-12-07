@@ -21,7 +21,7 @@ namespace ProjetoTelegram.Application.UseCases.ChatUseCases
             _realTimeNotificationService = realTimeNotificationService;
         }
 
-        public override async Task<object?> Handle(SeenMessageDTO input, CancellationToken cancellationToken)
+        public override async Task<Result<object?>> Handle(SeenMessageDTO input, CancellationToken cancellationToken)
         {
             var getMessageResult = await _messageRepository.Get(input.MessageId);
             if (getMessageResult.IsFailed) return Result.Fail("Erro ao buscar a mensagem.").WithErrors(getMessageResult.Errors);

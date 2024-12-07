@@ -14,7 +14,7 @@ using System.Text.Json;
 namespace ProjetoTelegram.Application.UseCases.ChatUseCases
 {
     public class OnSendMessageUseCase :
-        DefaultUseCase<SendMessageDTO, Result<MessageDto>>,
+        DefaultUseCase<SendMessageDTO, MessageDto>,
         IOnSendMessageUseCase
     {
         private readonly IChatRepository _chatRepository;

@@ -15,21 +15,13 @@ namespace ProjetoTelegram.Api.Controllers.Chat
         public async Task<IActionResult> List(
             [FromServices] IListUserChatsUseCase useCase,
             CancellationToken cancellationToken)
-        {
-            var result = await RunAsync(useCase, null, cancellationToken);
-
-            return Ok(result);
-        }
+            => await RunAsync(useCase, null, cancellationToken);
 
         [HttpGet("messages/{chatId}")]
         public async Task<IActionResult> ListMessages(
             [FromServices] IListChatMessagesUseCase useCase,
             [FromRoute] ObjectId chatId,
             CancellationToken cancellationToken)
-        {
-            var result = await RunAsync(useCase, chatId, cancellationToken);
-
-            return Ok(result);
-        }
+            => await RunAsync(useCase, chatId, cancellationToken);
     }
 }

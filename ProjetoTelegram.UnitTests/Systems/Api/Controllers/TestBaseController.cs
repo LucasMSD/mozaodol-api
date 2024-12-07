@@ -41,7 +41,7 @@ namespace ProjetoTelegram.UnitTests.Systems.Api.Controllers
         }
 
         [Fact]
-        public async Task GetUser_OnMissingIdentities_ThrowException()
+        public void GetUser_OnMissingIdentities_ThrowException()
         {
             // arrange
             var mockBaseController = new Mock<BaseController>() { CallBase = true };

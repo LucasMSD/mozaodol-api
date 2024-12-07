@@ -6,7 +6,7 @@ using ProjetoTelegram.Domain.Repositories.UserRepositories;
 namespace ProjetoTelegram.Application.UseCases.UserUseCases
 {
     public class GetUserDtoUseByIdUseCase :
-        DefaultUseCase<ObjectId, Result<UserDto>>,
+        DefaultUseCase<ObjectId, UserDto>,
         IGetUserDtoUseByIdUseCase
     {
         private readonly IUserRepository _userRepository;

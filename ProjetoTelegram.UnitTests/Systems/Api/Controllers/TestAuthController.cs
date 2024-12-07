@@ -27,8 +27,8 @@ namespace ProjetoTelegram.UnitTests.Systems.Api.Controllers
                 It.IsAny<CancellationToken>());
             // assert
             result.Should().NotBeNull();
-            result.Should().BeAssignableTo<CreatedResult>();
-            ((CreatedResult)result).StatusCode.Should().Be((int)HttpStatusCode.Created);
+            result.Should().BeAssignableTo<ObjectResult>();
+            ((ObjectResult)result).StatusCode.Should().Be((int)HttpStatusCode.Created);
         }
 
         [Fact]
@@ -38,7 +38,7 @@ namespace ProjetoTelegram.UnitTests.Systems.Api.Controllers
             var mockUseCase = new Mock<IAuthSignupUseCase>();
             mockUseCase
                 .Setup(x => x.Handle(It.IsAny<AuthSignupModel>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(Result.Fail(""));
+                .ReturnsAsync(Result.Fail(new Error("").WithMetadata("HttpStatusCode", 400)));
             // act
             var result = await new AuthController().Signup(
                 mockUseCase.Object,
@@ -47,8 +47,8 @@ namespace ProjetoTelegram.UnitTests.Systems.Api.Controllers
             // assert
 
             result.Should().NotBeNull();
-            result.Should().BeAssignableTo<BadRequestObjectResult>();
-            ((BadRequestObjectResult)result).StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
+            result.Should().BeAssignableTo<ObjectResult>();
+            ((ObjectResult)result).StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
         }
 
         [Fact]
@@ -58,7 +58,7 @@ namespace ProjetoTelegram.UnitTests.Systems.Api.Controllers
             var mockUseCase = new Mock<IAuthSignupUseCase>();
             mockUseCase
                 .Setup(x => x.Handle(It.IsAny<AuthSignupModel>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(Result.Fail(""));
+                .ReturnsAsync(Result.Fail(new Error("").WithMetadata("HttpStatusCode", 409)));
             // act
             var result = await new AuthController().Signup(
                 mockUseCase.Object,
@@ -67,8 +67,8 @@ namespace ProjetoTelegram.UnitTests.Systems.Api.Controllers
             // assert
 
             result.Should().NotBeNull();
-            result.Should().BeAssignableTo<ConflictObjectResult>();
-            ((ConflictObjectResult)result).StatusCode.Should().Be((int)HttpStatusCode.Conflict);
+            result.Should().BeAssignableTo<ObjectResult>();
+            ((ObjectResult)result).StatusCode.Should().Be((int)HttpStatusCode.Conflict);
         }
 
         [Fact]
@@ -78,7 +78,7 @@ namespace ProjetoTelegram.UnitTests.Systems.Api.Controllers
             var mockUseCase = new Mock<IAuthSignupUseCase>();
             mockUseCase
                 .Setup(x => x.Handle(It.IsAny<AuthSignupModel>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(Result.Fail(""));
+                .ReturnsAsync(Result.Fail(new Error("").WithMetadata("HttpStatusCode", 422)));
             // act
             var result = await new AuthController().Signup(
                 mockUseCase.Object,
@@ -87,8 +87,8 @@ namespace ProjetoTelegram.UnitTests.Systems.Api.Controllers
             // assert
 
             result.Should().NotBeNull();
-            result.Should().BeAssignableTo<UnprocessableEntityObjectResult>();
-            ((UnprocessableEntityObjectResult)result).StatusCode.Should().Be((int)HttpStatusCode.UnprocessableEntity);
+            result.Should().BeAssignableTo<ObjectResult>();
+            ((ObjectResult)result).StatusCode.Should().Be((int)HttpStatusCode.UnprocessableEntity);
         }
         #endregion
 
@@ -109,8 +109,8 @@ namespace ProjetoTelegram.UnitTests.Systems.Api.Controllers
             // assert
 
             result.Should().NotBeNull();
-            result.Should().BeAssignableTo<OkObjectResult>();
-            ((OkObjectResult)result).StatusCode.Should().Be((int)HttpStatusCode.OK);
+            result.Should().BeAssignableTo<ObjectResult>();
+            ((ObjectResult)result).StatusCode.Should().Be((int)HttpStatusCode.OK);
         }
 
         [Fact]
@@ -120,7 +120,7 @@ namespace ProjetoTelegram.UnitTests.Systems.Api.Controllers
             var mockUseCase = new Mock<IAuthLoginUseCase>();
             mockUseCase
                 .Setup(x => x.Handle(It.IsAny<AuthLoginModel>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(Result.Fail(""));
+                .ReturnsAsync(Result.Fail(new Error("").WithMetadata("HttpStatusCode", 400)));
             // act
             var result = await new AuthController().Login(
                 mockUseCase.Object,
@@ -129,8 +129,8 @@ namespace ProjetoTelegram.UnitTests.Systems.Api.Controllers
             // assert
 
             result.Should().NotBeNull();
-            result.Should().BeAssignableTo<BadRequestObjectResult>();
-            ((BadRequestObjectResult)result).StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
+            result.Should().BeAssignableTo<ObjectResult>();
+            ((ObjectResult)result).StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
         }
 
         [Fact]
@@ -140,7 +140,7 @@ namespace ProjetoTelegram.UnitTests.Systems.Api.Controllers
             var mockUseCase = new Mock<IAuthLoginUseCase>();
             mockUseCase
                 .Setup(x => x.Handle(It.IsAny<AuthLoginModel>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(Result.Fail(""));
+                .ReturnsAsync(Result.Fail(new Error("").WithMetadata("HttpStatusCode", 401)));
             // act
             var result = await new AuthController().Login(
                 mockUseCase.Object,
@@ -149,8 +149,8 @@ namespace ProjetoTelegram.UnitTests.Systems.Api.Controllers
             // assert
 
             result.Should().NotBeNull();
-            result.Should().BeAssignableTo<UnauthorizedObjectResult>();
-            ((UnauthorizedObjectResult)result).StatusCode.Should().Be((int)HttpStatusCode.Unauthorized);
+            result.Should().BeAssignableTo<ObjectResult>();
+            ((ObjectResult)result).StatusCode.Should().Be((int)HttpStatusCode.Unauthorized);
         }
 
         [Fact]
@@ -160,7 +160,7 @@ namespace ProjetoTelegram.UnitTests.Systems.Api.Controllers
             var mockUseCase = new Mock<IAuthLoginUseCase>();
             mockUseCase
                 .Setup(x => x.Handle(It.IsAny<AuthLoginModel>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(Result.Fail(""));
+                .ReturnsAsync(Result.Fail(new Error("").WithMetadata("HttpStatusCode", 403)));
             // act
             var result = await new AuthController().Login(
                 mockUseCase.Object,
@@ -169,7 +169,8 @@ namespace ProjetoTelegram.UnitTests.Systems.Api.Controllers
             // assert
 
             result.Should().NotBeNull();
-            result.Should().BeAssignableTo<ForbidResult>();
+            result.Should().BeAssignableTo<ObjectResult>();
+            ((ObjectResult)result).StatusCode.Should().Be((int)HttpStatusCode.Forbidden);
         }
         #endregion
     }

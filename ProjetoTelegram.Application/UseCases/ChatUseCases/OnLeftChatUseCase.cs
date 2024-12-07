@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Caching.Distributed;
+﻿using FluentResults;
+using Microsoft.Extensions.Caching.Distributed;
 using MongoDB.Bson;
 using ProjetoTelegram.Application.DTOs.UserDTOs;
 using ProjetoTelegram.Domain.Repositories.ChatRepositories;
@@ -26,7 +27,7 @@ namespace ProjetoTelegram.Application.UseCases.ChatUseCases
             _realTimeNotificationService = realTimeNotificationService;
         }
 
-        public override async Task<object?> Handle(object? input, CancellationToken cancellationToken)
+        public override async Task<Result<object?>> Handle(object? input, CancellationToken cancellationToken)
         {
             var userIdString = User.Id.ToString();
             var userStateJson = await _distributedCache.GetStringAsync(userIdString);

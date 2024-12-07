@@ -1,9 +1,8 @@
-﻿using FluentResults;
-using ProjetoTelegram.Application.DTOs.ChatDTOs;
+﻿using ProjetoTelegram.Application.DTOs.ChatDTOs;
 
 namespace ProjetoTelegram.Application.UseCases.ChatUseCases
 {
-    public interface IListUserChatsUseCase : IUseCase<object?, Result<IEnumerable<ChatDto>>>
+    public interface IListUserChatsUseCase : IUseCase<object?, IEnumerable<ChatDto>>
     {
     }
 }

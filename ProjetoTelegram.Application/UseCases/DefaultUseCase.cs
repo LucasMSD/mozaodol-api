@@ -7,7 +7,7 @@ namespace ProjetoTelegram.Application.UseCases
     {
         public UserInfo User { get; set; }
 
-        public abstract Task<TResponse> Handle(TInput input, CancellationToken cancellationToken);
+        public abstract Task<Result<TResponse>> Handle(TInput input, CancellationToken cancellationToken);
 
         public IUseCase<TInput, TResponse> SetUserInfo(UserInfo user)
         {

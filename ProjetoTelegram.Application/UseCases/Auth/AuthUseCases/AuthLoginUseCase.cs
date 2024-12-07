@@ -6,7 +6,7 @@ using ProjetoTelegram.Domain.Services;
 namespace ProjetoTelegram.Application.UseCases.Auth.AuthUseCases
 {
     public class AuthLoginUseCase :
-        DefaultUseCase<AuthLoginModel, Result<string>>,
+        DefaultUseCase<AuthLoginModel, string>,
         IAuthLoginUseCase
     {
         private readonly IUserRepository _userRepository;

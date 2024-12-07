@@ -8,7 +8,7 @@ using ProjetoTelegram.Domain.Repositories.UserRepositories;
 namespace ProjetoTelegram.Application.UseCases.ChatUseCases
 {
     public class ListChatMessagesUseCase :
-        DefaultUseCase<ObjectId, Result<List<MessageDto>>>,
+        DefaultUseCase<ObjectId, List<MessageDto>>,
         IListChatMessagesUseCase
     {
         private readonly IChatRepository _chatRepository;
