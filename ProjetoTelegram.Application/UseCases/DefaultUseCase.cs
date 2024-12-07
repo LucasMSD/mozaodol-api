@@ -1,8 +1,9 @@
-﻿using ProjetoTelegram.Application.CrossCutting.Models;
+﻿using FluentResults;
+using ProjetoTelegram.Application.CrossCutting.Models;
 
 namespace ProjetoTelegram.Application.UseCases
 {
-    public abstract class DefaultUseCase<TInput, TResponse> : IUseCase<TInput, TResponse>
+    public abstract class DefaultUseCase<TInput, TResponse> : IUseCase<TInput,TResponse>
     {
         public UserInfo User { get; set; }
 

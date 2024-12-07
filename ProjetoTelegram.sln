@@ -18,7 +18,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjetoTelegram.Api", "Proj
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjetoTelegram.Infrastructure", "ProjetoTelegram.Infrastructure\ProjetoTelegram.Infrastructure.csproj", "{E32DE05A-5280-40C4-ABCE-7B15343E65FD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjetoTelegram.UnitTests", "ProjetoTelegram.UnitTests\ProjetoTelegram.UnitTests.csproj", "{9944DC24-373F-465F-81A3-75D43D70ABD7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjetoTelegram.UnitTests", "ProjetoTelegram.UnitTests\ProjetoTelegram.UnitTests.csproj", "{9944DC24-373F-465F-81A3-75D43D70ABD7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

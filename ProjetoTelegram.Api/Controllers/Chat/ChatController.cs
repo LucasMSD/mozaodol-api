@@ -18,7 +18,7 @@ namespace ProjetoTelegram.Api.Controllers.Chat
         {
             var result = await RunAsync(useCase, null, cancellationToken);
 
-            return Ok(result.Value);
+            return Ok(result);
         }
 
         [HttpGet("messages/{chatId}")]
@@ -29,7 +29,7 @@ namespace ProjetoTelegram.Api.Controllers.Chat
         {
             var result = await RunAsync(useCase, chatId, cancellationToken);
 
-            return Ok(result.Value);
+            return Ok(result);
         }
     }
 }

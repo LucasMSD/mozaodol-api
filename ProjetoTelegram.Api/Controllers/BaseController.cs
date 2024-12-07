@@ -18,13 +18,13 @@ namespace ProjetoTelegram.Api.Controllers
         [NonAction]
         public virtual UserInfo GetUser()
         {
-            var userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier) ?? throw new AuthenticationException();
-            var username = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Name);
+            var userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier) ?? throw new UnauthorizedAccessException();
+            var username = User.Identity?.Name ?? throw new UnauthorizedAccessException();
 
             return new UserInfo
             {
                 Id = new ObjectId(userId.Value),
-                Username = username?.Value ?? string.Empty,
+                Username = username,
             };
         }
 

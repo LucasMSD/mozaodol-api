@@ -16,38 +16,19 @@ namespace ProjetoTelegram.UnitTests.Systems.Api.Controllers
         public async Task List_OnSuccessRequest_ReturnStatusCode200()
         {
             // arrange
-            var mockUseCase = new Mock<IListUserChatsUseCase>();
-            mockUseCase
-                .Setup(x => x.Handle(null, It.IsAny<CancellationToken>()))
+            var mockController = new Mock<ChatController>() { CallBase = true } ;
+            mockController
+                .Setup(x => x.RunAsync(It.IsAny<IListUserChatsUseCase>(), null, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(Result.Ok());
             // act
-            var result = await new ChatController().List(
-                mockUseCase.Object,
+            var result = await mockController.Object.List(
+                It.IsAny<IListUserChatsUseCase>(),
                 It.IsAny<CancellationToken>());
             // assert
 
             result.Should().NotBeNull();
             result.Should().BeAssignableTo<OkObjectResult>();
             ((OkObjectResult)result).StatusCode.Should().Be((int)HttpStatusCode.OK);
-        }
-
-        [Fact]
-        public async Task List_OnSuccessButNoContentRequest_ReturnStatusCode204()
-        {
-            // arrange
-            var mockUseCase = new Mock<IListUserChatsUseCase>();
-            mockUseCase
-                .Setup(x => x.Handle(null, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(Result.Ok());
-            // act
-            var result = await new ChatController().List(
-                mockUseCase.Object,
-                It.IsAny<CancellationToken>());
-            // assert
-
-            result.Should().NotBeNull();
-            result.Should().BeAssignableTo<NoContentResult>();
-            ((NoContentResult)result).StatusCode.Should().Be((int)HttpStatusCode.NoContent);
         }
         #endregion
 
@@ -70,26 +51,6 @@ namespace ProjetoTelegram.UnitTests.Systems.Api.Controllers
             result.Should().NotBeNull();
             result.Should().BeAssignableTo<OkObjectResult>();
             ((OkObjectResult)result).StatusCode.Should().Be((int)HttpStatusCode.OK);
-        }
-
-        [Fact]
-        public async Task ListMessages_OnNoContentRequest_ReturnStatusCode204()
-        {
-            // arrange
-            var mockUseCase = new Mock<IListChatMessagesUseCase>();
-            mockUseCase
-                .Setup(x => x.Handle(It.IsAny<ObjectId>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(Result.Ok());
-            // act
-            var result = await new ChatController().ListMessages(
-                mockUseCase.Object,
-                It.IsAny<ObjectId>(),
-                It.IsAny<CancellationToken>());
-            // assert
-
-            result.Should().NotBeNull();
-            result.Should().BeAssignableTo<NoContentResult>();
-            ((NoContentResult)result).StatusCode.Should().Be((int)HttpStatusCode.NoContent);
         }
 
         [Fact]

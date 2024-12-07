@@ -33,7 +33,6 @@ namespace ProjetoTelegram.Api.Controllers.User
             var result = await RunAsync(useCase, input, cancellationToken);
 
             return Ok(new { Message = "Atualizado" });
-            
         }
     }
 }
