@@ -10,20 +10,27 @@ namespace ProjetoTelegram.Infrastructure.Extensions.Results
             return GetActionResultFromResultMetadata(result);
         }
 
-        public static IActionResult ToActionResult(this Result result)
+        private static IActionResult GetActionResultFromResultMetadata<T>(Result<T> result)
         {
-            return GetActionResultFromResultMetadata(result);
+            if (!result.TryGetStatusCode(out var statusCode))
+                return result.IsFailed ? new BadRequestObjectResult(result.ToResult()) : new OkObjectResult(result);
+
+            return new ObjectResult(result.IsFailed ? result.ToResult() : result) { StatusCode = statusCode };
         }
 
-        private static IActionResult GetActionResultFromResultMetadata(IResultBase result)
+        private static bool TryGetStatusCode<T>(this Result<T> result, out int value)
         {
-            var reasons = result.Reasons.FirstOrDefault(x => x.HasMetadataKey("HttpStatusCode"));
+            value = -1;
+            var reason = result.Reasons.FirstOrDefault(x => x.HasMetadataKey("HttpStatusCode"));
 
-            if (reasons == null)
-                // todo: pensar em retorno generico
-                return new BadRequestObjectResult(result);
+            if (reason is null) return false;
 
-            return new ObjectResult(result) { StatusCode = (int)reasons.Metadata["HttpStatusCode"] };
+            bool res = reason.Metadata.TryGetValue("HttpStatusCode", out var valueObject);
+
+            if (!res || valueObject is null || valueObject is not int) return false;
+            value = (int)valueObject;
+
+            return true;
         }
     }
 }
