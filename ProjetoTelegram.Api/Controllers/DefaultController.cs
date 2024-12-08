@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using ProjetoTelegram.Application.CrossCutting.Models;
 using ProjetoTelegram.Application.UseCases;
-using ProjetoTelegram.Infrastructure.Extensions.Results;
 using System.Security.Claims;
 
 namespace ProjetoTelegram.Api.Controllers
@@ -26,6 +25,16 @@ namespace ProjetoTelegram.Api.Controllers
                 Id = new ObjectId(userId.Value),
                 Username = username,
             };
+        }
+
+        [NonAction]
+        public override async Task<IActionResult> RunAsync<TInput, TResponse>(
+            IUseCase<TInput, TResponse> useCase,
+            TInput input,
+            CancellationToken cancellationToken)
+        {
+            useCase.SetUserInfo(GetUser()); 
+            return await base.RunAsync(useCase, input, cancellationToken);
         }
     }
 }
