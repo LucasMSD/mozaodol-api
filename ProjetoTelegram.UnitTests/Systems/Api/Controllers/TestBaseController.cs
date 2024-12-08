@@ -17,7 +17,7 @@ namespace ProjetoTelegram.UnitTests.Systems.Api.Controllers
             // arrange
             ObjectId userId = default;
             string username = "teste";
-            var mockBaseController = new Mock<BaseController>() { CallBase = true };
+            var mockBaseController = new Mock<DefaultController>() { CallBase = true };
 
             var identity = new ClaimsIdentity(new List<Claim>()
             {
@@ -44,7 +44,7 @@ namespace ProjetoTelegram.UnitTests.Systems.Api.Controllers
         public void GetUser_OnMissingIdentities_ThrowException()
         {
             // arrange
-            var mockBaseController = new Mock<BaseController>() { CallBase = true };
+            var mockBaseController = new Mock<DefaultController>() { CallBase = true };
 
             var principal = new ClaimsPrincipal();
             mockBaseController.Object.ControllerContext = new ControllerContext()

@@ -17,15 +17,13 @@ namespace ProjetoTelegram.Infrastructure.Extensions.Results
 
         private static IActionResult GetActionResultFromResultMetadata(IResultBase result)
         {
-            if (result.IsSuccess)
-                return new OkObjectResult(result);
+            var reasons = result.Reasons.FirstOrDefault(x => x.HasMetadataKey("HttpStatusCode"));
 
-            var error = result.Errors.FirstOrDefault(x => x.HasMetadataKey("HttpStatusCode"));
-
-            if (error == null)
+            if (reasons == null)
+                // todo: pensar em retorno generico
                 return new BadRequestObjectResult(result);
 
-            return new ObjectResult(result) { StatusCode = (int)error.Metadata["HttpStatusCode"] };
+            return new ObjectResult(result) { StatusCode = (int)reasons.Metadata["HttpStatusCode"] };
         }
     }
 }

@@ -8,7 +8,7 @@ namespace ProjetoTelegram.Api.Controllers.Chat
     [ApiController]
     [Route("[controller]")]
     [Authorize]
-    public class ChatController : BaseController
+    public class ChatController : DefaultController
     {
 
         [HttpGet]

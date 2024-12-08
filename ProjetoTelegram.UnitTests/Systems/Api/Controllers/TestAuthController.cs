@@ -17,8 +17,9 @@ namespace ProjetoTelegram.UnitTests.Systems.Api.Controllers
         {
             // arrange
             var mockUseCase = new Mock<IAuthSignupUseCase>();
-            mockUseCase.Setup(x => x.Handle(It.IsAny<AuthSignupModel>(), It.IsAny<CancellationToken>()))
-                       .ReturnsAsync(Result.Ok());
+            mockUseCase
+                .Setup(x => x.Handle(It.IsAny<AuthSignupModel>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(Result.Ok().WithReason(new Success("").WithMetadata("HttpStatusCode", 201)));
 
             // act
             var result = await new AuthController().Signup(
@@ -100,7 +101,7 @@ namespace ProjetoTelegram.UnitTests.Systems.Api.Controllers
             var mockUseCase = new Mock<IAuthLoginUseCase>();
             mockUseCase
                 .Setup(x => x.Handle(It.IsAny<AuthLoginModel>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(Result.Ok());
+                .ReturnsAsync(Result.Ok().WithReason(new Success("").WithMetadata("HttpStatusCode", 200)));
             // act
             var result = await new AuthController().Login(
                 mockUseCase.Object,

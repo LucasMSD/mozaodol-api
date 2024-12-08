@@ -8,7 +8,7 @@ namespace ProjetoTelegram.Api.Controllers.User
     [ApiController]
     [Route("[controller]")]
     [Authorize]
-    public class UserController : BaseController
+    public class UserController : DefaultController
     {
 
         [HttpGet("current")]
