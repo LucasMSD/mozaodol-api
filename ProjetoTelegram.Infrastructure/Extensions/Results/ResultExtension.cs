@@ -1,5 +1,6 @@
 ﻿using FluentResults;
 using Microsoft.AspNetCore.Mvc;
+using ProjetoTelegram.Infrastructure.Dtos.ResultDtos;
 
 namespace ProjetoTelegram.Infrastructure.Extensions.Results
 {
@@ -13,7 +14,9 @@ namespace ProjetoTelegram.Infrastructure.Extensions.Results
         private static IActionResult GetActionResultFromResultMetadata<T>(Result<T> result)
         {
             if (!result.TryGetStatusCode(out var statusCode))
-                return result.IsFailed ? new BadRequestObjectResult(result.ToResult()) : new OkObjectResult(result);
+                return result.IsFailed
+                    ? new BadRequestObjectResult(result.ToResultDto()) :
+                      new OkObjectResult(result.ToResultDto());
 
             return new ObjectResult(result.IsFailed ? result.ToResult() : result) { StatusCode = statusCode };
         }
@@ -32,5 +35,8 @@ namespace ProjetoTelegram.Infrastructure.Extensions.Results
 
             return true;
         }
+
+        public static ResultDto ToResultDto<T>(this Result<T> result)
+            => ResultDto.FromResult(result);
     }
 }
