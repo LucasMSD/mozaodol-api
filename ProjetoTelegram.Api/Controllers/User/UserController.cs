@@ -8,20 +8,14 @@ namespace ProjetoTelegram.Api.Controllers.User
     [ApiController]
     [Route("[controller]")]
     [Authorize]
-    public class UserController : BaseController
+    public class UserController : DefaultController
     {
 
         [HttpGet("current")]
         public async Task<IActionResult> GetCurrent(
             [FromServices] IGetCurrentUserDtoUseCase useCase,
             CancellationToken cancellationToken)
-        {
-            var result = await RunAsync(useCase, null, cancellationToken);
-
-            if (result.IsFailed) return NotFound(result);
-
-            return Ok(result.Value);
-        }
+            => await RunAsync(useCase, null, cancellationToken);
 
 
         [HttpPut("pushToken")]
@@ -29,11 +23,6 @@ namespace ProjetoTelegram.Api.Controllers.User
             [FromServices] IUpdatePushTokenUseCase useCase,
             [FromBody] UpdatePushTokenDTO input,
             CancellationToken cancellationToken)
-        {
-            var result = await RunAsync(useCase, input, cancellationToken);
-
-            return Ok(new { Message = "Atualizado" });
-            
-        }
+            => await RunAsync(useCase, input, cancellationToken);
     }
 }

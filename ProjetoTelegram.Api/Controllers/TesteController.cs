@@ -7,7 +7,7 @@ namespace ProjetoTelegram.Api.Controllers
     public class TesteController : ControllerBase
     {
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public IActionResult Get()
         {
             return Ok(
                 $"""

@@ -1,4 +1,5 @@
 ﻿
+using FluentResults;
 using ProjetoTelegram.Application.DTOs.ChatDTOs;
 using ProjetoTelegram.Domain.Repositories.ChatRepositories;
 using ProjetoTelegram.Domain.Services;
@@ -20,7 +21,7 @@ namespace ProjetoTelegram.Application.UseCases.ChatUseCases
             _realTimeNotificationService = realTimeNotificationService;
         }
 
-        public override async Task<object?> Handle(OnTypingDTO input, CancellationToken cancellationToken)
+        public override async Task<Result<object?>> Handle(OnTypingDTO input, CancellationToken cancellationToken)
         {
             await _realTimeNotificationService.NotifyGroupExcept(input.ChatId.ToString(), User.Connection, new RealTimeNotificationMessage
             {

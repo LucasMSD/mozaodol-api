@@ -21,7 +21,7 @@ namespace ProjetoTelegram.Application.UseCases.UserUseCases
             _userRepository = userRepository;
         }
 
-        public override async Task<object?> Handle(UpdatePushTokenDTO input, CancellationToken cancellationToken)
+        public override async Task<Result<object?>> Handle(UpdatePushTokenDTO input, CancellationToken cancellationToken)
         {
             var getUsersResult = await _userRepository.Get(User.Id);
             if (getUsersResult.IsFailed) return Result.Fail("Erro ao buscar lista de contatos.").WithErrors(getUsersResult.Errors);

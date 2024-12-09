@@ -4,7 +4,7 @@ using ProjetoTelegram.Application.DTOs.UserDTOs;
 namespace ProjetoTelegram.Application.UseCases.UserUseCases
 {
     public class GetCurrentUserDtoUseCase :
-        DefaultUseCase<object?, Result<UserDto>>,
+        DefaultUseCase<object?, UserDto>,
         IGetCurrentUserDtoUseCase
     {
         private readonly IGetUserDtoUseByIdUseCase _getUserDtoUseByIdCase;
