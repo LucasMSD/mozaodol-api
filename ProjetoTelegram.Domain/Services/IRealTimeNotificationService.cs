@@ -6,7 +6,7 @@
         Task AddConnectionToGroup(IEnumerable<string> connectionsIds, string groupName);
         Task AddConnectionToGroup(string connectionId, IEnumerable<string> groupsNames);
 
-        Task Notify(string connectionId, IRealTimeNotificationMessage message);
+        Task Notify(string userId, IRealTimeNotificationMessage message);
         Task NotifyExcept(string excludedConnection, IRealTimeNotificationMessage message);
         Task NotifyGroup(string groupName, IRealTimeNotificationMessage message);
         Task NotifyGroupExcept(string groupName, string excludedConnectionId,IRealTimeNotificationMessage message);

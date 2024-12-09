@@ -30,8 +30,8 @@ namespace ProjetoTelegram.Infrastructure.Services.NotificationServices.SignalRNo
             await clients.SendAsync(notification.ChannelId, notification.Content);
         }
 
-        public async Task Notify(string connectionId, IRealTimeNotificationMessage message)
-            => await _hubContext.Clients.Client(connectionId).SendAsync(message.ChannelId, message.Content);
+        public async Task Notify(string userId, IRealTimeNotificationMessage message)
+            => await _hubContext.Clients.User(userId).SendAsync(message.ChannelId, message.Content);
 
         public async Task NotifyExcept(string excludedConnection, IRealTimeNotificationMessage message)
             => await _hubContext.Clients.AllExcept(excludedConnection).SendAsync(message.ChannelId, message.Content);
