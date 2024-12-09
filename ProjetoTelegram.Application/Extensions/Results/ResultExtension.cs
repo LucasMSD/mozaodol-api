@@ -1,8 +1,8 @@
 ﻿using FluentResults;
 using Microsoft.AspNetCore.Mvc;
-using ProjetoTelegram.Infrastructure.Dtos.ResultDtos;
+using ProjetoTelegram.Application.DTOs.ResultDtos;
 
-namespace ProjetoTelegram.Infrastructure.Extensions.Results
+namespace ProjetoTelegram.Application.Extensions.Results
 {
     public static class ResultExtension
     {
@@ -21,10 +21,10 @@ namespace ProjetoTelegram.Infrastructure.Extensions.Results
             return new ObjectResult(result.IsFailed ? result.ToResult() : result) { StatusCode = statusCode };
         }
 
-        private static bool TryGetStatusCode<T>(this Result<T> result, out int value)
+        public static bool TryGetStatusCode<T>(this Result<T> result, out int value)
         {
             value = -1;
-            var reason = result.Reasons.FirstOrDefault(x => x.HasMetadataKey("HttpStatusCode"));
+            var reason = result.Reasons.LastOrDefault(x => x.HasMetadataKey("HttpStatusCode"));
 
             if (reason is null) return false;
 
@@ -38,5 +38,11 @@ namespace ProjetoTelegram.Infrastructure.Extensions.Results
 
         public static ResultDto ToResultDto<T>(this Result<T> result)
             => ResultDto.FromResult(result);
+
+        public static Result<T> ToResult<T>(this T value, int statusCode)
+            => Result.Ok(value).WithReason(new Success("").WithMetadata("HttpStatusCode", statusCode));
+
+        public static Result<T> SetStatusCode<T>(this Result<T> result, int statusCode)
+            => result.WithReason(new Success("").WithMetadata("HttpStatusCode", statusCode));
     }
 }

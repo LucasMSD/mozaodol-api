@@ -1,5 +1,6 @@
 ﻿using FluentResults;
 using ProjetoTelegram.Application.DTOs.AuthDTOs;
+using ProjetoTelegram.Application.Extensions.Results;
 using ProjetoTelegram.Domain.Repositories.UserRepositories;
 using ProjetoTelegram.Domain.Services;
 
@@ -34,7 +35,9 @@ namespace ProjetoTelegram.Application.UseCases.Auth.AuthUseCases
                 return Result.Fail("Combinação de Username e senha incorretos.");
             }
 
-            return _tokenService.GenerateToken(userResult.Value._id, userResult.Value.Username);
+            var token = _tokenService.GenerateToken(userResult.Value._id, userResult.Value.Username);
+
+            return token.SetStatusCode(200);
         }
     }
 }

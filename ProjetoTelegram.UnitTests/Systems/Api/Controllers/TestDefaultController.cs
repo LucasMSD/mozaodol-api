@@ -9,7 +9,7 @@ using System.Security.Claims;
 
 namespace ProjetoTelegram.UnitTests.Systems.Api.Controllers
 {
-    public class TestBaseController
+    public class TestDefaultController
     {
         [Fact]
         public void GetUser_OnSuccess_ReturnCompleteUserInfo()

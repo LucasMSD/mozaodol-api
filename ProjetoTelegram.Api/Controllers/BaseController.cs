@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ProjetoTelegram.Application.Extensions.Results;
 using ProjetoTelegram.Application.UseCases;
-using ProjetoTelegram.Infrastructure.Extensions.Results;
 
 namespace ProjetoTelegram.Api.Controllers
 {

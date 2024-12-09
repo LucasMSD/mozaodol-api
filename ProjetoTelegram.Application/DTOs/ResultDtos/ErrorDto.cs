@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-
-namespace ProjetoTelegram.Infrastructure.Dtos.ResultDtos
+﻿namespace ProjetoTelegram.Application.DTOs.ResultDtos
 {
     public class ErrorDto
     {

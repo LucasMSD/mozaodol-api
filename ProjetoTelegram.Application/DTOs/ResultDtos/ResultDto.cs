@@ -1,6 +1,6 @@
 ﻿using FluentResults;
 
-namespace ProjetoTelegram.Infrastructure.Dtos.ResultDtos
+namespace ProjetoTelegram.Application.DTOs.ResultDtos
 {
     public class ResultDto
     {
