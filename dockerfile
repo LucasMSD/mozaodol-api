@@ -5,9 +5,9 @@ WORKDIR /app
 
 RUN apt-get update && apt-get install -y tzdata
 
-RUN dotnet restore ProjetoTelegram.sln
-RUN dotnet publish ProjetoTelegram.sln -o out
+RUN dotnet restore Mozaodol.sln
+RUN dotnet publish Mozaodol.sln -o out
 
 WORKDIR ./out
 
-ENTRYPOINT ["dotnet", "ProjetoTelegram.Api.dll"]
+ENTRYPOINT ["dotnet", "Mozaodol.Api.dll"]

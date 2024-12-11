@@ -1,0 +1,56 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34728.123
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Deploy", "Deploy", "{9047695E-5E82-441E-BD23-E87151EA098B}"
+	ProjectSection(SolutionItems) = preProject
+		dockerfile = dockerfile
+		mongodb-config = mongodb-config
+		services.yaml = services.yaml
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mozaodol.Domain", "Mozaodol.Domain\Mozaodol.Domain.csproj", "{33061EF0-1FDF-4B38-8AA9-9F45261168C8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mozaodol.Application", "Mozaodol.Application\Mozaodol.Application.csproj", "{4B4E0B96-CBE6-428F-AAE5-8608E2DAA090}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mozaodol.Api", "Mozaodol.Api\Mozaodol.Api.csproj", "{1847B0BF-0062-462B-A360-DCBDC3A91B4A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mozaodol.Infrastructure", "Mozaodol.Infrastructure\Mozaodol.Infrastructure.csproj", "{327F3EF6-5891-4574-990F-8735A5928DC5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mozaodol.UnitTests", "Mozaodol.UnitTests\Mozaodol.UnitTests.csproj", "{7371BB91-3EB4-48CC-BE86-A6EFF9B69070}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{33061EF0-1FDF-4B38-8AA9-9F45261168C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{33061EF0-1FDF-4B38-8AA9-9F45261168C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{33061EF0-1FDF-4B38-8AA9-9F45261168C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{33061EF0-1FDF-4B38-8AA9-9F45261168C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B4E0B96-CBE6-428F-AAE5-8608E2DAA090}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B4E0B96-CBE6-428F-AAE5-8608E2DAA090}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B4E0B96-CBE6-428F-AAE5-8608E2DAA090}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B4E0B96-CBE6-428F-AAE5-8608E2DAA090}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1847B0BF-0062-462B-A360-DCBDC3A91B4A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1847B0BF-0062-462B-A360-DCBDC3A91B4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1847B0BF-0062-462B-A360-DCBDC3A91B4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1847B0BF-0062-462B-A360-DCBDC3A91B4A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{327F3EF6-5891-4574-990F-8735A5928DC5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{327F3EF6-5891-4574-990F-8735A5928DC5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{327F3EF6-5891-4574-990F-8735A5928DC5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{327F3EF6-5891-4574-990F-8735A5928DC5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7371BB91-3EB4-48CC-BE86-A6EFF9B69070}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7371BB91-3EB4-48CC-BE86-A6EFF9B69070}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7371BB91-3EB4-48CC-BE86-A6EFF9B69070}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7371BB91-3EB4-48CC-BE86-A6EFF9B69070}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6E841B1A-A1F7-4244-8128-8EB02EB52AB5}
+	EndGlobalSection
+EndGlobal
