@@ -18,15 +18,15 @@ namespace Mozaodol.Application.UseCases.UserUseCases
 
         public override async Task<Result<UserDto>> Handle(ObjectId input, CancellationToken cancellationToken)
         {
-            var getUserResult = await _userRepository.Get(input);
-            if (getUserResult.IsFailed) return Result.Fail("Erro ao buscar usuário.").WithErrors(getUserResult.Errors);
+            var user = await _userRepository.Get(input);
+            if (user == null) return Result.Fail("Usuário não existe.");
 
             return new UserDto
             {
-                Name = getUserResult.Value.Name,
-                Username = getUserResult.Value.Username,
-                _id = getUserResult.Value._id,
-                PushToken = getUserResult.Value.PushToken,
+                Name = user.Name,
+                Username = user.Username,
+                _id = user._id,
+                PushToken = user.PushToken,
             };
         }
     }

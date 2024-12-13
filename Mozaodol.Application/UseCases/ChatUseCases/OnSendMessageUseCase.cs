@@ -44,13 +44,11 @@ namespace Mozaodol.Application.UseCases.ChatUseCases
         {
             // validar se o chat existe
             // todo: se der algum erro, eu preciso avisar o client sobre o problema no envio
-            var getChatResult = await _chatRepository.Get(input.ChatId);
-            if (getChatResult.IsFailed) return Result.Fail("Erro ao buscar chat.").WithErrors(getChatResult.Errors);
-            if (getChatResult.Value == null) return Result.Fail("Chat não encontrado.");
+            var chat = await _chatRepository.Get(input.ChatId);
+            if (chat == null) return Result.Fail("Chat não encontrado.");
 
-            var getUserResult = await _userRepository.Get(User.Id);
-            if (getUserResult.IsFailed) return Result.Fail("Erro ao buscar usuário.").WithErrors(getUserResult.Errors);
-            if (getUserResult.Value == null) return Result.Fail("Usuário não encontrado.");
+            var user = await _userRepository.Get(User.Id);
+            if (user == null) return Result.Fail("Usuário não encontrado.");
 
             // salvar mensagem
             var message = new Message
@@ -71,13 +69,13 @@ namespace Mozaodol.Application.UseCases.ChatUseCases
                 UserId = message.UserId,
                 ChatId = message.ChatId,
                 Text = message.Text,
-                UserUsername = getUserResult.Value.Username,
+                UserUsername = user.Username,
                 Status = message.Status,
                 ExternalId = message.ExternalId,
                 Timestamp = message.Timestamp.ToString("HH:mm"),
             };
 
-            var usersToSendNotification = getChatResult.Value.UsersIds.Where(x => x != message.UserId).Select(x => x.ToString());
+            var usersToSendNotification = chat.UsersIds.Where(x => x != message.UserId).Select(x => x.ToString());
 
             await _realTimeNotificationService.Notify(usersToSendNotification, new RealTimeNotificationMessage
             {
@@ -90,7 +88,7 @@ namespace Mozaodol.Application.UseCases.ChatUseCases
                 Content = MessageStatus.Sent
             });
 
-            await SendPushNotifications(messageDto, getChatResult.Value);
+            await SendPushNotifications(messageDto, chat);
 
             return messageDto;
         }

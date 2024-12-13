@@ -24,20 +24,21 @@ namespace Mozaodol.Application.UseCases.ChatUseCases
         public override async Task<Result<IEnumerable<ChatDto>>> Handle(object? input, CancellationToken cancellationToken)
         {
             // todo: refatorar
-            var getUserResult = await _userRepository.Get(User.Id);
-            if (getUserResult.IsFailed) return Result.Fail("Erro ao buscar usuário").WithErrors(getUserResult.Errors);
+            var user = await _userRepository.Get(User.Id);
+            if (user == null) return Result.Fail("Usuário não existe");
 
-            var getChatResult = await _chatRepository.Get(getUserResult.Value.ChatsIds);
-            if (getChatResult.IsFailed) return Result.Fail("Erro ao buscar chat").WithErrors(getChatResult.Errors);
+            var chats = await _chatRepository.Get(user.ChatsIds);
 
-            var getUsersResult = await _userRepository.Get(getChatResult.Value.SelectMany(x => x.UsersIds));
-            if (getUsersResult.IsFailed) return Result.Fail("Erro ao buscar os usuários").WithErrors(getUsersResult.Errors);
+            if (chats.Count == 0) return Enumerable.Empty<ChatDto>().ToResult();
 
-            return getChatResult.Value.Select(chat => new ChatDto
+            var chatUsers = await _userRepository.Get(chats.SelectMany(x => x.UsersIds));
+            if (chatUsers.Count == 0) return Result.Fail("Usuários do chat não existem");
+
+            return chats.Select(chat => new ChatDto
             {
                 _id = chat._id,
                 Name = Chat.GenerateChatName(
-                    getUsersResult.Value.Where(user => chat.UsersIds.Contains(user._id) && user._id != User.Id).ToArray())
+                    chatUsers.Where(user => chat.UsersIds.Contains(user._id) && user._id != User.Id).ToArray())
             }).ToList();
         }
     }

@@ -17,30 +17,27 @@ namespace Mozaodol.Infrastructure.Repositories.MessageRepositories
             _context = dbContext;
         }
 
-        public async Task<Result<Message>> Get(ObjectId _id)
+        public async Task<Message> Get(ObjectId _id)
         {
             return (await _context.Database.GetCollection<Message>(nameof(Message)).FindAsync(x => x._id == _id)).FirstOrDefault();
         }
 
-        public async Task<Result<List<Message>>> GetByChat(ObjectId chatId)
+        public async Task<List<Message>> GetByChat(ObjectId chatId)
         {
             var result = await _context.Database.GetCollection<Message>(nameof(Message)).FindAsync(x => x.ChatId == chatId);
-            return Result.Ok(await result.ToListAsync());
+            return await result.ToListAsync();
         }
 
-        public async Task<Result> Insert(Message message)
+        public async Task Insert(Message message)
         {
             await _context.Database.GetCollection<Message>(nameof(Message)).InsertOneAsync(message);
-            return Result.Ok();
         }
 
-        public async Task<Result> UpdateStatus(ObjectId _id, MessageStatus status)
+        public async Task UpdateStatus(ObjectId _id, MessageStatus status)
         {
             await _context.Database.GetCollection<Message>(nameof(Message)).UpdateOneAsync(
                 x => x._id == _id,
                 new UpdateDefinitionBuilder<Message>().Set(x => x.Status, status));
-
-            return Result.Ok();
         }
     }
 }

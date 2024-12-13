@@ -27,26 +27,23 @@ namespace Mozaodol.Application.UseCases.ChatUseCases
 
         public override async Task<Result<List<MessageDto>>> Handle(ObjectId chatId, CancellationToken cancellationToken)
         {
-            var getChatResult = await _chatRepository.Get(chatId);
-            if (getChatResult.IsFailed) return Result.Fail("Erro ao buscar o chat.").WithErrors(getChatResult.Errors);
-            if (getChatResult.Value == null) return Result.Fail("Chat não encontrado.");
+            var chat = await _chatRepository.Get(chatId);
+            if (chat == null) return Result.Fail("Chat não encontrado.");
 
-            var getUsersResult = await _userRepository.Get(getChatResult.Value.UsersIds);
-            if (getUsersResult.IsFailed) return Result.Fail("Erro ao buscar usuários.").WithErrors(getUsersResult.Errors);
-            if (!getUsersResult.Value.Any()) return Result.Fail("Usuários do chat não encontrados.");
+            var chatUsers = await _userRepository.Get(chat.UsersIds);
+            if (chatUsers.Count == 0) return Result.Fail("Usuários do chat não encontrados.");
 
-            var getMessagesResult = await _messageRepository.GetByChat(chatId);
-            if (getMessagesResult.IsFailed) return Result.Fail("Erro ao buscar mensagens.").WithErrors(getMessagesResult.Errors);
-            if (!getMessagesResult.Value.Any()) return Result.Fail("Mensagens não encontradas.");
+            var chatMessages = await _messageRepository.GetByChat(chatId);
+            if (chatMessages.Count == 0) return Result.Fail("Mensagens não encontradas.");
 
-            var usersDict = getUsersResult.Value.ToDictionary(user => user._id);
-            return getMessagesResult.Value.OrderByDescending(x => x.Timestamp).Select(message => new MessageDto
+            var usersDict = chatUsers.ToDictionary(user => user._id);
+            return chatMessages.OrderByDescending(x => x.Timestamp).Select(message => new MessageDto
             {
                 Text = message.Text,
                 UserId = message.UserId,
                 UserUsername = usersDict[message.UserId].Username,
                 Timestamp = message.Timestamp.ToString("HH:mm"),
-                ChatId = getChatResult.Value._id,
+                ChatId = chat._id,
                 Status = message.Status,
                 ExternalId = string.IsNullOrEmpty(message.ExternalId) ? message._id.ToString() : message.ExternalId,
                 _id = message._id

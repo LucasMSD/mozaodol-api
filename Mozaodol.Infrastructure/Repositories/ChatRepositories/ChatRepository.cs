@@ -1,5 +1,4 @@
-﻿using FluentResults;
-using MongoDB.Bson;
+﻿using MongoDB.Bson;
 using MongoDB.Driver;
 using Mozaodol.Domain.Entities.ChatEntities;
 using Mozaodol.Domain.Repositories.ChatRepositories;
@@ -16,21 +15,20 @@ namespace Mozaodol.Infrastructure.Repositories.ChatRepositories
             _context = dbContext;
         }
 
-        public async Task<Result<Chat>> Get(ObjectId chatId)
+        public async Task<Chat> Get(ObjectId chatId)
         {
             return (await _context.Database.GetCollection<Chat>(nameof(Chat)).FindAsync(x => x._id == chatId)).FirstOrDefault();
         }
 
-        public async Task<Result<List<Chat>>> Get(IEnumerable<ObjectId> chatsIds)
+        public async Task<List<Chat>> Get(IEnumerable<ObjectId> chatsIds)
         {
             var result = await _context.Database.GetCollection<Chat>(nameof(Chat)).FindAsync(x => chatsIds.Contains(x._id));
-            return Result.Ok(await result.ToListAsync());
+            return await result.ToListAsync();
         }
 
-        public async Task<Result> Insert(Chat chat)
+        public async Task Insert(Chat chat)
         {
             await _context.Database.GetCollection<Chat>(nameof(Chat)).InsertOneAsync(chat);
-            return Result.Ok();
         }
     }
 }

@@ -41,7 +41,7 @@ namespace Mozaodol.UnitTests.Systems.Application.UseCases.AuthUseCases
             // arrange
             mockUserRepository
                 .Setup(x => x.GetByLogin(It.IsAny<string>(), It.IsAny<string>()))
-                .ReturnsAsync(Result.Ok(user));
+                .ReturnsAsync(user);
 
             mockTokenService
                 .Setup(x => x.GenerateToken(It.IsAny<ObjectId>(), It.IsAny<string>()))
