@@ -67,7 +67,7 @@ namespace Mozaodol.UnitTests.Systems.Application.UseCases.ChatUseCases
                     Text = "Mensagem do usuário A",
                     Status = MessageStatus.Seen,
                     ExternalId = "externaIdA",
-                    Timestamp = DateTime.Now,
+                    Timestamp = new DateTime(2024, 12, 1, 9, 5, 0),
                 },
                 new Message(){
                     _id = new ObjectId("6758130bb4502b2ca171d19e"),
@@ -76,7 +76,7 @@ namespace Mozaodol.UnitTests.Systems.Application.UseCases.ChatUseCases
                     Text = "Mensagem do usuário B",
                     Status = MessageStatus.Sent,
                     ExternalId = "externaIdB",
-                    Timestamp = DateTime.Now.AddSeconds(2),
+                    Timestamp = new DateTime(2024, 12, 1, 9, 5, 0).AddSeconds(2),
                 }
                 ];
 
@@ -141,11 +141,11 @@ namespace Mozaodol.UnitTests.Systems.Application.UseCases.ChatUseCases
                 .ReturnsAsync(chat);
 
             _mockUserRepository
-                .Setup(x => x.Get(It.IsAny<IEnumerable<ObjectId>>()))
+                .Setup(x => x.Get(It.Is<IEnumerable<ObjectId>>(y => y.SequenceEqual(chat.UsersIds))))
                 .ReturnsAsync(users);
 
             _mockMessageRepository
-                .Setup(x => x.GetByChat(It.IsAny<ObjectId>()))
+                .Setup(x => x.GetByChat(It.Is<ObjectId>(y => y == chat._id)))
                 .ReturnsAsync(messages);
 
             // act
@@ -153,7 +153,7 @@ namespace Mozaodol.UnitTests.Systems.Application.UseCases.ChatUseCases
                 _mockChatRepository.Object,
                 _mockUserRepository.Object,
                 _mockMessageRepository.Object)
-                .Handle(It.IsAny<ObjectId>(), It.IsAny<CancellationToken>());
+                .Handle(chat._id, It.IsAny<CancellationToken>());
             // assert
 
             result.ValueOrDefault.Select(x => x.Timestamp).Should().BeInDescendingOrder();
