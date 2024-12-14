@@ -1,6 +1,7 @@
 ﻿using FluentResults;
 using Mozaodol.Application.DTOs.AuthDTOs;
 using Mozaodol.Application.DTOs.UserDTOs;
+using Mozaodol.Application.Extensions.Results;
 using Mozaodol.Domain.Entities.UserEntities;
 using Mozaodol.Domain.Repositories.UserRepositories;
 
@@ -25,7 +26,7 @@ namespace Mozaodol.Application.UseCases.Auth.AuthUseCases
 
                 if (userAlreadyExists)
                 {
-                    return Result.Fail("Username já utilizado.");
+                    return Result.Fail("Username já utilizado.").SetStatusCode(409);
                 }
 
                 // salvar o novo usuário
@@ -42,7 +43,7 @@ namespace Mozaodol.Application.UseCases.Auth.AuthUseCases
                     Name = user.Name,
                     PushToken = user.PushToken,
                     Username = user.Username
-                };
+                }.ToResult(200);
             }
         }
     }

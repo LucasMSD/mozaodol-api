@@ -34,12 +34,12 @@ namespace Mozaodol.Infrastructure.Repositories.UserRepositories
             return await result.ToListAsync();
         }
 
-        public async Task<User> Get(ObjectId _id)
+        public async Task<User?> Get(ObjectId _id)
         {
             return (await _context.Database.GetCollection<User>(nameof(User)).FindAsync(x => x._id == _id)).FirstOrDefault();
         }
 
-        public async Task<User> GetByLogin(string username, string password)
+        public async Task<User?> GetByLogin(string username, string password)
         {
             return await _context.Database.GetCollection<User>(nameof(User)).FindSync(x => x.Username == username && x.Password == password).FirstOrDefaultAsync();
         }

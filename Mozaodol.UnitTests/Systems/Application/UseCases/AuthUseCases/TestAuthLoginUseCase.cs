@@ -65,5 +65,67 @@ namespace Mozaodol.UnitTests.Systems.Application.UseCases.AuthUseCases
 
             ((HttpStatusCode)statusCode).Should().BeDefined().And.Be(HttpStatusCode.OK);
         }
+
+        [Fact]
+        public async Task Handle_WrongLoginCombination_ReturnResultUnauthorized()
+        {
+            // arrange
+            mockUserRepository
+                .Setup(x => x.GetByLogin(It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync((User?)null);
+
+            mockTokenService
+                .Setup(x => x.GenerateToken(It.IsAny<ObjectId>(), It.IsAny<string>()))
+                .Returns(Result.Ok("Valor do token"));
+            var authLoginModel = new AuthLoginModel()
+            {
+                Username = "Test",
+                Password = "teste"
+            };
+            // act
+            var result = await authLoginUseCase.Handle(
+                    authLoginModel,
+                    It.IsAny<CancellationToken>());
+            // assert
+
+            result.Should().NotBeNull();
+            result.ValueOrDefault.Should().BeNullOrEmpty();
+            result.IsSuccess.Should().BeFalse();
+            result.IsFailed.Should().BeTrue();
+            result.TryGetStatusCode(out var statusCode).Should().BeTrue();
+
+            ((HttpStatusCode)statusCode).Should().BeDefined().And.Be(HttpStatusCode.Unauthorized);
+        }
+
+        [Fact]
+        public async Task Handle_TokenNotGenerated_ReturnInternalError()
+        {
+            // arrange
+            mockUserRepository
+                .Setup(x => x.GetByLogin(It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(user);
+
+            mockTokenService
+                .Setup(x => x.GenerateToken(It.IsAny<ObjectId>(), It.IsAny<string>()))
+                .Returns(Result.Fail("sds"));
+            var authLoginModel = new AuthLoginModel()
+            {
+                Username = "Test",
+                Password = "teste"
+            };
+            // act
+            var result = await authLoginUseCase.Handle(
+                    authLoginModel,
+                    It.IsAny<CancellationToken>());
+            // assert
+
+            result.Should().NotBeNull();
+            result.ValueOrDefault.Should().BeNullOrEmpty();
+            result.IsSuccess.Should().BeFalse();
+            result.IsFailed.Should().BeTrue();
+            result.TryGetStatusCode(out var statusCode).Should().BeTrue();
+
+            ((HttpStatusCode)statusCode).Should().BeDefined().And.Be(HttpStatusCode.InternalServerError);
+        }
     }
 }

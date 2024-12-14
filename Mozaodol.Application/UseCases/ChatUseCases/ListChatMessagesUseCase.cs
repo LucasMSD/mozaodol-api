@@ -1,6 +1,7 @@
 ﻿using FluentResults;
 using MongoDB.Bson;
 using Mozaodol.Application.DTOs.MessageDTOs;
+using Mozaodol.Application.Extensions.Results;
 using Mozaodol.Domain.Repositories.ChatRepositories;
 using Mozaodol.Domain.Repositories.MessageRepositories;
 using Mozaodol.Domain.Repositories.UserRepositories;
@@ -28,13 +29,13 @@ namespace Mozaodol.Application.UseCases.ChatUseCases
         public override async Task<Result<List<MessageDto>>> Handle(ObjectId chatId, CancellationToken cancellationToken)
         {
             var chat = await _chatRepository.Get(chatId);
-            if (chat == null) return Result.Fail("Chat não encontrado.");
+            if (chat == null) return Result.Fail("Chat não encontrado.").SetStatusCode(404);
 
             var chatUsers = await _userRepository.Get(chat.UsersIds);
-            if (chatUsers.Count == 0) return Result.Fail("Usuários do chat não encontrados.");
+            if (chatUsers.Count == 0) return Result.Fail("Usuários do chat não encontrados.").SetStatusCode(500);
 
             var chatMessages = await _messageRepository.GetByChat(chatId);
-            if (chatMessages.Count == 0) return Result.Fail("Mensagens não encontradas.");
+            if (chatMessages.Count == 0) return Result.Ok().SetStatusCode(204);
 
             var usersDict = chatUsers.ToDictionary(user => user._id);
             return chatMessages.OrderByDescending(x => x.Timestamp).Select(message => new MessageDto
@@ -47,7 +48,7 @@ namespace Mozaodol.Application.UseCases.ChatUseCases
                 Status = message.Status,
                 ExternalId = string.IsNullOrEmpty(message.ExternalId) ? message._id.ToString() : message.ExternalId,
                 _id = message._id
-            }).ToList();
+            }).ToList().ToResult(200);
         }
     }
 }

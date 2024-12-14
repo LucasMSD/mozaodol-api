@@ -15,7 +15,7 @@ namespace Mozaodol.Infrastructure.Repositories.ChatRepositories
             _context = dbContext;
         }
 
-        public async Task<Chat> Get(ObjectId chatId)
+        public async Task<Chat?> Get(ObjectId chatId)
         {
             return (await _context.Database.GetCollection<Chat>(nameof(Chat)).FindAsync(x => x._id == chatId)).FirstOrDefault();
         }
