@@ -8,7 +8,7 @@ namespace Mozaodol.Application.DTOs.MessageDTOs
     {
         public ObjectId _id { get; set; }
         public string Text { get; set; }
-        public ReceiveMessageMediaDto Media { get; set; }
+        public ReceiveMessageMediaDto? Media { get; set; }
         public ObjectId UserId { get; set; }
         public string UserUsername { get; set; }
         public string Timestamp { get; set; }
