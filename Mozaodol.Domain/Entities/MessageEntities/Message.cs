@@ -15,7 +15,5 @@ namespace Mozaodol.Domain.Entities.MessageEntities
         public DateTime Timestamp { get; set; }
         public MessageStatus Status { get; set; }
         public string ExternalId { get; set; }
-
-        public string 
     }
 }

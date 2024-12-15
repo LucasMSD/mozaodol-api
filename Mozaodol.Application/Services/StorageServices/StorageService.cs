@@ -9,11 +9,11 @@ namespace Mozaodol.Application.Services.StorageServices
 {
     public class StorageService : IStorageService
     {
-        private readonly IStorageProvider _storageProvider;
+        private readonly IStorageProviderService _storageProvider;
         private readonly IStorageRepository _storageRepository;
 
         public StorageService(
-            IStorageProvider storageProvider,
+            IStorageProviderService storageProvider,
             IStorageRepository storageRepository)
         {
             _storageProvider = storageProvider;

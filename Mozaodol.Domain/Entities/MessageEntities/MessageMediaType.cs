@@ -1,10 +1,15 @@
-﻿namespace Mozaodol.Domain.Entities.MessageEntities
+﻿using System.ComponentModel;
+
+namespace Mozaodol.Domain.Entities.MessageEntities
 {
     public enum MediaType
     {
         None,
-        Photo,
+        [Description("image")]
+        Image,
+        [Description("video")]
         Video,
+        [Description("audio")]
         Audio
     }
 }

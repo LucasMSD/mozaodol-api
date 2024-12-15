@@ -20,6 +20,6 @@ namespace Mozaodol.Application.DTOs.MessageDTOs
     public class ReceiveMessageMediaDto
     {
         public string DownloadUrl { get; set; }
-        public MessageMediaType Type { get; set; }
+        public MediaType Type { get; set; }
     }
 }

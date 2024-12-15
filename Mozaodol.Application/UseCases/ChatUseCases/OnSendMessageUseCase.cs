@@ -93,9 +93,11 @@ namespace Mozaodol.Application.UseCases.ChatUseCases
 
             if (message.Media != null)
             {
+                var mediaUrlResult = await _storageService.GetDownloadUrl(message.Media.StorageId);
+                if (mediaUrlResult.IsFailed) return Result.Fail(mediaUrlResult.Errors);
                 messageDto.Media = new ReceiveMessageMediaDto
                 {
-                    DownloadUrl = await _storageService.GetDownloadUrl(message.Media.StorageId),
+                    DownloadUrl = mediaUrlResult.Value,
                     Type = message.Media.Type
                 };
             }

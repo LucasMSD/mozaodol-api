@@ -23,6 +23,7 @@ using Mozaodol.Infrastructure.Repositories.StorageRepositories;
 using Mozaodol.Infrastructure.Repositories.UserRepositories;
 using Mozaodol.Infrastructure.Services.NotificationServices.ExpoPushNotificationServices;
 using Mozaodol.Infrastructure.Services.NotificationServices.SignalRNotificationServices;
+using Mozaodol.Infrastructure.Services.StorageProviderServices.GoogleStorageService;
 using Mozaodol.Infrastructure.Services.TokenServices.JwtTokenServices;
 using StackExchange.Redis;
 using System.Text;
@@ -114,6 +115,9 @@ namespace Mozaodol
                     }
                 };
             });
+
+            builder.Services.Configure<GoogleStorageSettings>(builder.Configuration.GetSection(nameof(GoogleStorageSettings)));
+            builder.Services.AddSingleton<IStorageProviderService, GoogleStorageService>();
 
             builder.Services.AddControllers().AddJsonOptions(options =>
             {
