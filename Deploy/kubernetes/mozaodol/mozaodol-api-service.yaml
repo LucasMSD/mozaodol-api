@@ -3,11 +3,10 @@ kind: Service
 metadata:
   name: mozaodol-api-service
 spec:
-  type: NodePort
+  type: LoadBalancer
   selector:
-    app.kubernetes.io/name: mozaodol-api-deployment
+    app: mozaodol-api
   ports:
     - protocol: TCP
       port: 5188
       targetPort: 5188
-      nodePort: 30000
