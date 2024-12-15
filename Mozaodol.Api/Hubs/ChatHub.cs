@@ -44,7 +44,6 @@ namespace Mozaodol.Api.Hubs
 
         public async Task OnSendMessage(
             SendMessageDTO input,
-            
             [FromServices] IOnSendMessageUseCase onSendMessageUseCase)
             => await RunAsync(onSendMessageUseCase, input);
 

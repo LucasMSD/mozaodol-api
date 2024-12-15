@@ -1,6 +1,6 @@
 ﻿namespace Mozaodol.Domain.Entities.MessageEntities
 {
-    public enum MessageMediaType
+    public enum MediaType
     {
         None,
         Photo,
