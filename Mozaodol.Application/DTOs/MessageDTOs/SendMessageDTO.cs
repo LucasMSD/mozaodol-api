@@ -15,5 +15,6 @@ namespace Mozaodol.Application.DTOs.MessageDTOs
     {
         public MediaType Type { get; set; }
         public string ContentBase64 { get; set; }
+        public string Extension { get; set; }
     }
 }

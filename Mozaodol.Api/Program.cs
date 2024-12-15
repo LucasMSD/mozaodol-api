@@ -5,11 +5,13 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
 using Mozaodol.Api.Hubs;
+using Mozaodol.Application.Services.StorageServices;
 using Mozaodol.Application.UseCases.Auth.AuthUseCases;
 using Mozaodol.Application.UseCases.ChatUseCases;
 using Mozaodol.Application.UseCases.UserUseCases;
 using Mozaodol.Domain.Repositories.ChatRepositories;
 using Mozaodol.Domain.Repositories.MessageRepositories;
+using Mozaodol.Domain.Repositories.StorageRepositories;
 using Mozaodol.Domain.Repositories.UserRepositories;
 using Mozaodol.Domain.Services;
 using Mozaodol.Infrastructure.Config.Serialization.JsonSerialization;
@@ -17,6 +19,7 @@ using Mozaodol.Infrastructure.Contexts.MongoDBContexts;
 using Mozaodol.Infrastructure.Contexts.RedisDBContexts;
 using Mozaodol.Infrastructure.Repositories.ChatRepositories;
 using Mozaodol.Infrastructure.Repositories.MessageRepositories;
+using Mozaodol.Infrastructure.Repositories.StorageRepositories;
 using Mozaodol.Infrastructure.Repositories.UserRepositories;
 using Mozaodol.Infrastructure.Services.NotificationServices.ExpoPushNotificationServices;
 using Mozaodol.Infrastructure.Services.NotificationServices.SignalRNotificationServices;
@@ -124,6 +127,7 @@ namespace Mozaodol
             builder.Services.AddScoped<MongoDBContext, MongoDBContext>();
             builder.Services.AddScoped<IChatRepository, ChatRepository>();
             builder.Services.AddScoped<IMessageRepository, MessageRepository>();
+            builder.Services.AddScoped<IStorageRepository, StorageRepository>();
             builder.Services.AddScoped<ITokenService, JwtTokenService>();
             
             builder.Services.AddScoped<IRealTimeNotificationService, SignalRNotificationService<ChatHub>>();
@@ -147,6 +151,8 @@ namespace Mozaodol
             builder.Services.AddScoped<IAuthLoginUseCase, AuthLoginUseCase>();
             builder.Services.AddScoped<IAuthSignupUseCase, AuthSignupUseCase>();
             builder.Services.AddScoped<IOnTypingUseCase, OnTypingUseCase>();
+
+            builder.Services.AddScoped<IStorageService, StorageService>();
 
             var app = builder.Build();
 
