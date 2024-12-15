@@ -44,5 +44,8 @@ namespace Mozaodol.Application.Extensions.Results
 
         public static Result<T> SetStatusCode<T>(this Result<T> result, int statusCode)
             => result.WithReason(new Success("").WithMetadata("HttpStatusCode", statusCode));
+
+        public static Result SetStatusCode(this Result result, int statusCode)
+            => result.WithReason(new Success("").WithMetadata("HttpStatusCode", statusCode));
     }
 }

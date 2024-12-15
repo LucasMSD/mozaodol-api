@@ -23,12 +23,10 @@ namespace Mozaodol.Application.UseCases.UserUseCases
 
         public override async Task<Result<object?>> Handle(UpdatePushTokenDTO input, CancellationToken cancellationToken)
         {
-            var getUsersResult = await _userRepository.Get(User.Id);
-            if (getUsersResult.IsFailed) return Result.Fail("Erro ao buscar lista de contatos.").WithErrors(getUsersResult.Errors);
-            if (getUsersResult.Value == null) return Result.Fail("Usuário não encontrado.");
+            var user = await _userRepository.Get(User.Id);
+            if (user == null) return Result.Fail("Usuário não encontrado.");
 
-            var updateResult = await _userRepository.UpdatePushToken(User.Id, input.PushToken);
-            if (updateResult.IsFailed) return Result.Fail("Erro ao atualizar push token.").WithErrors(updateResult.Errors);
+            await _userRepository.UpdatePushToken(User.Id, input.PushToken);
 
             // todo: refatorar urgentemente
             var userStateJson = await _distributedCache.GetStringAsync(User.Id.ToString());

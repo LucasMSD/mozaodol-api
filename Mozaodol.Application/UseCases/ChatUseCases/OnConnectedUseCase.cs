@@ -62,7 +62,7 @@ namespace Mozaodol.Application.UseCases.ChatUseCases
             await _distributedCache.SetStringAsync(userIdString, JsonSerializer.Serialize(userState));
 
             var user = await _userRepository.Get(User.Id);
-            var chats = user.Value.ChatsIds.Select(x => x.ToString());
+            var chats = user.ChatsIds.Select(x => x.ToString());
             await _realTimeNotificationService.AddConnectionToGroup(User.Connection, chats);
             if (string.IsNullOrEmpty(userState.OpenedChatId)) return null;
             await _realTimeNotificationService.NotifyGroupExcept(userState.OpenedChatId, User.Connection, new RealTimeNotificationMessage

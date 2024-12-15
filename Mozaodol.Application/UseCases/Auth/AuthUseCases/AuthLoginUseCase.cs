@@ -23,19 +23,13 @@ namespace Mozaodol.Application.UseCases.Auth.AuthUseCases
 
         public override async Task<Result<string>> Handle(AuthLoginModel input, CancellationToken cancellationToken)
         {
-            var userResult = await _userRepository.GetByLogin(input.Username, input.Password);
+            var user = await _userRepository.GetByLogin(input.Username, input.Password);
+            if (user == null)
+                return Result.Fail("Combinação de Username e senha incorretos.").SetStatusCode(401);
 
-            if (userResult.IsFailed)
-            {
-                return Result.Fail("Erro ao tentar realizar o login.").WithErrors(userResult.Errors);
-            }
-
-            if (userResult.Value == null)
-            {
-                return Result.Fail("Combinação de Username e senha incorretos.");
-            }
-
-            var token = _tokenService.GenerateToken(userResult.Value._id, userResult.Value.Username);
+            var token = _tokenService.GenerateToken(user._id, user.Username);
+            if (token.IsFailed)
+                return Result.Fail("Houve um problmea interno").SetStatusCode(500);
 
             return token.SetStatusCode(200);
         }

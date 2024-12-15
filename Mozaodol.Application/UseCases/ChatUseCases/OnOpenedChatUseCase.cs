@@ -47,7 +47,7 @@ namespace Mozaodol.Application.UseCases.ChatUseCases
 
             var chat = await _chatRepository.Get(input.ChatId);
 
-            var otherUser = chat.Value.UsersIds.FirstOrDefault(x => x != User.Id);
+            var otherUser = chat.UsersIds.FirstOrDefault(x => x != User.Id);
             if (otherUser == default) return null;
             var otherUserStateJson = await _distributedCache.GetStringAsync(otherUser.ToString());
             if (string.IsNullOrEmpty(otherUserStateJson)) return null;

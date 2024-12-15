@@ -1,6 +1,7 @@
 ﻿using FluentResults;
 using Mozaodol.Application.DTOs.AuthDTOs;
 using Mozaodol.Application.DTOs.UserDTOs;
+using Mozaodol.Application.Extensions.Results;
 using Mozaodol.Domain.Entities.UserEntities;
 using Mozaodol.Domain.Repositories.UserRepositories;
 
@@ -21,16 +22,11 @@ namespace Mozaodol.Application.UseCases.Auth.AuthUseCases
         public override async Task<Result<UserDto>> Handle(AuthSignupModel input, CancellationToken cancellationToken)
         {
             {
-                var userExistResult = await _userRepository.Exists(input.Username);
-                // validar se o username já existe
-                if (userExistResult.IsFailed)
-                {
-                    return Result.Fail("Não foi possível verificar se já existe outro usuário com o mesmo Username.").WithErrors(userExistResult.Errors);
-                }
+                var userAlreadyExists = await _userRepository.Exists(input.Username);
 
-                if (userExistResult.Value)
+                if (userAlreadyExists)
                 {
-                    return Result.Fail("Username já utilizado.");
+                    return Result.Fail("Username já utilizado.").SetStatusCode(409);
                 }
 
                 // salvar o novo usuário
@@ -43,11 +39,11 @@ namespace Mozaodol.Application.UseCases.Auth.AuthUseCases
 
                 return new UserDto
                 {
-                    _id = user.Value._id,
-                    Name = user.Value.Name,
-                    PushToken = user.Value.PushToken,
-                    Username = user.Value.Username
-                };
+                    _id = user._id,
+                    Name = user.Name,
+                    PushToken = user.PushToken,
+                    Username = user.Username
+                }.ToResult(200);
             }
         }
     }

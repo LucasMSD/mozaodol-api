@@ -1,19 +1,18 @@
-﻿using FluentResults;
-using MongoDB.Bson;
+﻿using MongoDB.Bson;
 using Mozaodol.Domain.Entities.UserEntities;
 
 namespace Mozaodol.Domain.Repositories.UserRepositories
 {
     public interface IUserRepository
     {
-        Task<Result<User>> Add(User user);
-        Task<Result<bool>> Exists(string usarName);
-        Task<Result<List<User>>> GetAll();
-        Task<Result<User>> GetByLogin(string username, string password);
-        Task<Result<User>> Get(ObjectId _id);
-        Task<Result<List<User>>> Get(IEnumerable<ObjectId> ids);
-        Task<Result> UpdateContacts(ObjectId userId, IEnumerable<ObjectId> contacts);
-        Task<Result> UpdatePushToken(ObjectId userId, string pushToken);
-        Task<Result> AddToChat(IEnumerable<ObjectId> usersIds, ObjectId chatId);
+        Task<User> Add(User user);
+        Task<bool> Exists(string usarName);
+        Task<List<User>> GetAll();
+        Task<User?> GetByLogin(string username, string password);
+        Task<User?> Get(ObjectId _id);
+        Task<List<User>> Get(IEnumerable<ObjectId> ids);
+        Task UpdateContacts(ObjectId userId, IEnumerable<ObjectId> contacts);
+        Task UpdatePushToken(ObjectId userId, string pushToken);
+        Task AddToChat(IEnumerable<ObjectId> usersIds, ObjectId chatId);
     }
 }

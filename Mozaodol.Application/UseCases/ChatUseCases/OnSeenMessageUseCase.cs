@@ -23,16 +23,16 @@ namespace Mozaodol.Application.UseCases.ChatUseCases
 
         public override async Task<Result<object?>> Handle(SeenMessageDTO input, CancellationToken cancellationToken)
         {
-            var getMessageResult = await _messageRepository.Get(input.MessageId);
-            if (getMessageResult.IsFailed) return Result.Fail("Erro ao buscar a mensagem.").WithErrors(getMessageResult.Errors);
-            await _messageRepository.UpdateStatus(getMessageResult.Value._id, MessageStatus.Seen);
+            var message = await _messageRepository.Get(input.MessageId);
+            if (message == null) return Result.Fail("Mensagem não existe");
+            await _messageRepository.UpdateStatus(message._id, MessageStatus.Seen);
 
-            await _realTimeNotificationService.Notify([getMessageResult.Value.UserId.ToString()], new RealTimeNotificationMessage
+            await _realTimeNotificationService.Notify([message.UserId.ToString()], new RealTimeNotificationMessage
             {
-                ChannelId = $"MessageStatusUpdate-{getMessageResult.Value.ExternalId}",
+                ChannelId = $"MessageStatusUpdate-{message.ExternalId}",
                 Content = MessageStatus.Seen
             });
-            return getMessageResult.Value;
+            return Result.Ok();
         }
     }
 }
