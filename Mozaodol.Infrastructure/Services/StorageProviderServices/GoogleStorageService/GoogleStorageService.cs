@@ -20,7 +20,7 @@ namespace Mozaodol.Infrastructure.Services.StorageProviderServices.GoogleStorage
             // todo: tratar exceções
             var signedUrl = await _client.CreateUrlSigner().SignAsync(
                 _googleStorageSettings.BucketName,
-                name,
+                $"{_googleStorageSettings.DefaultFolderName}/{name}",
                 TimeSpan.FromMinutes(_googleStorageSettings.SignedUrlsExpirationTimeInSeconds));
 
             return Result.Ok(signedUrl);
