@@ -42,7 +42,7 @@ namespace Mozaodol.Application.Services.StorageServices
             await _storageRepository.Insert(storage, userId);
 
             var stream = new MemoryStream(Convert.FromBase64String(contentBase64));
-            var uploadResult = await _storageProvider.Upload(stream, storage._id.ToString(), extension);
+            var uploadResult = await _storageProvider.Upload(stream, $"{userId}/{storage._id}", extension);
             if (uploadResult.IsFailed)
                 return Result.Fail(uploadResult.Errors);
 
