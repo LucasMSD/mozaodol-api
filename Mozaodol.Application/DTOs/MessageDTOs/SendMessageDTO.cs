@@ -13,8 +13,8 @@ namespace Mozaodol.Application.DTOs.MessageDTOs
 
     public class SendMessageMediaDto
     {
-        public MediaType Type { get; set; }
+        public MediaType Type { get; set; } = MediaType.Image;
         public string ContentBase64 { get; set; }
-        public string Extension { get; set; }
+        public string Extension { get; set; } = "jpg";
     }
 }

@@ -20,7 +20,7 @@ namespace Mozaodol.Infrastructure.Services.StorageProviderServices.GoogleStorage
             // todo: tratar exceções
             var signedUrl = await _client.CreateUrlSigner().SignAsync(
                 _googleStorageSettings.BucketName,
-                $"{_googleStorageSettings.DefaultFolderName}/{name}",
+                GetDefaultObjectName(name),
                 TimeSpan.FromMinutes(_googleStorageSettings.SignedUrlsExpirationTimeInSeconds));
 
             return Result.Ok(signedUrl);
@@ -30,8 +30,11 @@ namespace Mozaodol.Infrastructure.Services.StorageProviderServices.GoogleStorage
         {
             // todo: ajustar contentType
             // todo tratar exceções
-            await _client.UploadObjectAsync(_googleStorageSettings.BucketName, name, "", stream);
+            await _client.UploadObjectAsync(_googleStorageSettings.BucketName, GetDefaultObjectName(name), "", stream);
             return Result.Ok();
         }
+
+        private string GetDefaultObjectName(string name)
+            => $"{_googleStorageSettings.DefaultFolderName}/{name}";
     }
 }

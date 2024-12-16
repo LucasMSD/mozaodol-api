@@ -60,6 +60,7 @@ namespace Mozaodol
             builder.Services.AddSignalR(options =>
             {
                 options.DisableImplicitFromServicesParameters = true;
+                options.MaximumReceiveMessageSize = 1000000000;
             }).AddJsonProtocol(options =>
             {
                 options.PayloadSerializerOptions.Converters.Add(new ObjectIdToStringConverter());

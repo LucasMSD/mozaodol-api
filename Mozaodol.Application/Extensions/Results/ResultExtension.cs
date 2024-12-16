@@ -18,6 +18,7 @@ namespace Mozaodol.Application.Extensions.Results
                     ? new BadRequestObjectResult(result.ToResultDto()) :
                       new OkObjectResult(result.ToResultDto());
 
+            if (statusCode == 204) return new NoContentResult();
             return new ObjectResult(result.IsFailed ? result.ToResultDto() : result.ToResultDto()) { StatusCode = statusCode };
         }
 

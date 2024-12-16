@@ -64,7 +64,7 @@ namespace Mozaodol.Application.UseCases.ChatUseCases
                 ExternalId = input.ExternalId
             };
 
-            if (input.Media != null)
+            if (input.Media != null && !string.IsNullOrEmpty(input.Media.ContentBase64))
             {
                 var uploadResult = await _storageService.Upload(input.Media.ContentBase64, input.Media.Extension,input.Media.Type, user._id);
                 if (uploadResult.IsFailed)
@@ -93,11 +93,11 @@ namespace Mozaodol.Application.UseCases.ChatUseCases
 
             if (message.Media != null)
             {
-                var mediaUrlResult = await _storageService.GetDownloadUrl(message.Media.StorageId);
+                var mediaUrlResult = await _storageService.GetDownloadUrl(message.Media.StorageId, User.Id);
                 if (mediaUrlResult.IsFailed) return Result.Fail(mediaUrlResult.Errors);
                 messageDto.Media = new ReceiveMessageMediaDto
                 {
-                    DownloadUrl = mediaUrlResult.Value,
+                    Url = mediaUrlResult.Value,
                     Type = message.Media.Type
                 };
             }

@@ -2,6 +2,7 @@
 using MongoDB.Bson;
 using Mozaodol.Domain.Entities.MessageEntities;
 using Mozaodol.Domain.Entities.StorageEntities;
+using Mozaodol.Domain.Entities.UserEntities;
 using Mozaodol.Domain.Repositories.StorageRepositories;
 using Mozaodol.Domain.Services;
 
@@ -20,9 +21,9 @@ namespace Mozaodol.Application.Services.StorageServices
             _storageRepository = storageRepository;
         }
 
-        public async Task<Result<string>> GetDownloadUrl(ObjectId storageId)
+        public async Task<Result<string>> GetDownloadUrl(ObjectId storageId, ObjectId userId)
         {
-            var result = await _storageProvider.GetDownloadUrl(storageId.ToString());
+            var result = await _storageProvider.GetDownloadUrl($"{userId}/{storageId}");
             if (result.IsFailed)
                 return Result.Fail(result.Errors);
 
