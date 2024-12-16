@@ -11,6 +11,7 @@ using Mozaodol.Domain.Enums;
 using Mozaodol.Domain.Repositories.ChatRepositories;
 using Mozaodol.Domain.Repositories.MessageRepositories;
 using Mozaodol.Domain.Repositories.UserRepositories;
+using Mozaodol.Domain.Services;
 using System.Net;
 
 namespace Mozaodol.UnitTests.Systems.Application.UseCases.ChatUseCases
@@ -21,12 +22,14 @@ namespace Mozaodol.UnitTests.Systems.Application.UseCases.ChatUseCases
         private readonly Mock<IChatRepository> _mockChatRepository;
         private readonly Mock<IUserRepository> _mockUserRepository;
         private readonly Mock<IMessageRepository> _mockMessageRepository;
+        private readonly Mock<IStorageService> _mockStorageService;
 
         public TestListChatMessagesUseCase()
         {
             _mockChatRepository = new Mock<IChatRepository>();
             _mockUserRepository = new Mock<IUserRepository>();
             _mockMessageRepository = new Mock<IMessageRepository>();
+            _mockStorageService = new Mock<IStorageService>();
         }
 
         private (List<User>, Chat, List<Message>) SetupSuccessfulValues
@@ -77,6 +80,10 @@ namespace Mozaodol.UnitTests.Systems.Application.UseCases.ChatUseCases
                     Status = MessageStatus.Sent,
                     ExternalId = "externaIdB",
                     Timestamp = new DateTime(2024, 12, 1, 9, 5, 0).AddSeconds(2),
+                    Media = new MessageMedia() {
+                        StorageId = new ObjectId(),
+                        Type = MediaType.Image,
+                    }
                 }
                 ];
 
@@ -117,7 +124,8 @@ namespace Mozaodol.UnitTests.Systems.Application.UseCases.ChatUseCases
             var result = await new ListChatMessagesUseCase(
                 _mockChatRepository.Object,
                 _mockUserRepository.Object,
-                _mockMessageRepository.Object)
+                _mockMessageRepository.Object,
+                _mockStorageService.Object)
                 .Handle(chat._id, It.IsAny<CancellationToken>());
             // assert
 
@@ -152,7 +160,8 @@ namespace Mozaodol.UnitTests.Systems.Application.UseCases.ChatUseCases
             var result = await new ListChatMessagesUseCase(
                 _mockChatRepository.Object,
                 _mockUserRepository.Object,
-                _mockMessageRepository.Object)
+                _mockMessageRepository.Object,
+                _mockStorageService.Object)
                 .Handle(chat._id, It.IsAny<CancellationToken>());
             // assert
 
@@ -179,7 +188,8 @@ namespace Mozaodol.UnitTests.Systems.Application.UseCases.ChatUseCases
             var result = await new ListChatMessagesUseCase(
                 _mockChatRepository.Object,
                 _mockUserRepository.Object,
-                _mockMessageRepository.Object)
+                _mockMessageRepository.Object,
+                _mockStorageService.Object)
                 .Handle(It.IsAny<ObjectId>(), It.IsAny<CancellationToken>());
             // assert
 
@@ -208,7 +218,8 @@ namespace Mozaodol.UnitTests.Systems.Application.UseCases.ChatUseCases
             var result = await new ListChatMessagesUseCase(
                 _mockChatRepository.Object,
                 _mockUserRepository.Object,
-                _mockMessageRepository.Object)
+                _mockMessageRepository.Object,
+                _mockStorageService.Object)
                 .Handle(It.IsAny<ObjectId>(), It.IsAny<CancellationToken>());
             // assert
 
@@ -241,7 +252,8 @@ namespace Mozaodol.UnitTests.Systems.Application.UseCases.ChatUseCases
             var result = await new ListChatMessagesUseCase(
                 _mockChatRepository.Object,
                 _mockUserRepository.Object,
-                _mockMessageRepository.Object)
+                _mockMessageRepository.Object,
+                _mockStorageService.Object)
                 .Handle(It.IsAny<ObjectId>(), It.IsAny<CancellationToken>());
             // assert
 

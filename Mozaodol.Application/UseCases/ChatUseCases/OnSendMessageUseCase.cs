@@ -23,6 +23,7 @@ namespace Mozaodol.Application.UseCases.ChatUseCases
         private readonly IRealTimeNotificationService _realTimeNotificationService;
         private readonly IPushNotificationService _pushNotificationService;
         private readonly IDistributedCache _distributedCache;
+        private readonly IStorageService _storageService;
 
         public OnSendMessageUseCase(
             IChatRepository chatRepository,
@@ -30,7 +31,8 @@ namespace Mozaodol.Application.UseCases.ChatUseCases
             IMessageRepository messageRepository,
             IRealTimeNotificationService realTimeNotificationService,
             IPushNotificationService pushNotificationService,
-            IDistributedCache distributedCache)
+            IDistributedCache distributedCache,
+            IStorageService storageService)
         {
             _chatRepository = chatRepository;
             _userRepository = userRepository;
@@ -38,6 +40,7 @@ namespace Mozaodol.Application.UseCases.ChatUseCases
             _realTimeNotificationService = realTimeNotificationService;
             _pushNotificationService = pushNotificationService;
             _distributedCache = distributedCache;
+            _storageService = storageService;
         }
 
         public override async Task<Result<MessageDto>> Handle(SendMessageDTO input, CancellationToken cancellationToken)
@@ -61,6 +64,19 @@ namespace Mozaodol.Application.UseCases.ChatUseCases
                 ExternalId = input.ExternalId
             };
 
+            if (input.Media != null && !string.IsNullOrEmpty(input.Media.ContentBase64))
+            {
+                var uploadResult = await _storageService.Upload(input.Media.ContentBase64, input.Media.Extension,input.Media.Type, user._id);
+                if (uploadResult.IsFailed)
+                    return Result.Fail(uploadResult.Errors);
+
+                message.Media = new MessageMedia()
+                {
+                    StorageId = uploadResult.Value,
+                    Type = input.Media.Type,
+                };
+            }
+
             await _messageRepository.Insert(message);
 
             var messageDto = new MessageDto()
@@ -74,6 +90,17 @@ namespace Mozaodol.Application.UseCases.ChatUseCases
                 ExternalId = message.ExternalId,
                 Timestamp = message.Timestamp.ToString("HH:mm"),
             };
+
+            if (message.Media != null)
+            {
+                var mediaUrlResult = await _storageService.GetDownloadUrl(message.Media.StorageId, User.Id);
+                if (mediaUrlResult.IsFailed) return Result.Fail(mediaUrlResult.Errors);
+                messageDto.Media = new ReceiveMessageMediaDto
+                {
+                    Url = mediaUrlResult.Value,
+                    Type = message.Media.Type
+                };
+            }
 
             var usersToSendNotification = chat.UsersIds.Where(x => x != message.UserId).Select(x => x.ToString());
 

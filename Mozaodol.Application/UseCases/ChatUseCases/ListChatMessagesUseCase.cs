@@ -5,6 +5,7 @@ using Mozaodol.Application.Extensions.Results;
 using Mozaodol.Domain.Repositories.ChatRepositories;
 using Mozaodol.Domain.Repositories.MessageRepositories;
 using Mozaodol.Domain.Repositories.UserRepositories;
+using Mozaodol.Domain.Services;
 
 namespace Mozaodol.Application.UseCases.ChatUseCases
 {
@@ -15,15 +16,18 @@ namespace Mozaodol.Application.UseCases.ChatUseCases
         private readonly IChatRepository _chatRepository;
         private readonly IUserRepository _userRepository;
         private readonly IMessageRepository _messageRepository;
+        private readonly IStorageService _storageService;
 
         public ListChatMessagesUseCase(
             IChatRepository chatRepository,
             IUserRepository userRepository,
-            IMessageRepository messageRepository)
+            IMessageRepository messageRepository,
+            IStorageService storageService)
         {
             _chatRepository = chatRepository;
             _userRepository = userRepository;
             _messageRepository = messageRepository;
+            _storageService = storageService;
         }
 
         public override async Task<Result<List<MessageDto>>> Handle(ObjectId chatId, CancellationToken cancellationToken)
@@ -38,6 +42,9 @@ namespace Mozaodol.Application.UseCases.ChatUseCases
             if (chatMessages.Count == 0) return Result.Ok().SetStatusCode(204);
 
             var usersDict = chatUsers.ToDictionary(user => user._id);
+
+            var urlTasks = chatMessages.Where(x => x.Media != null).Select(x => new { id = x._id, UrlTask = _storageService.GetDownloadUrl(x.Media.StorageId, x.UserId)});
+            await Task.WhenAll(urlTasks.Select(x => x.UrlTask));
             return chatMessages.OrderByDescending(x => x.Timestamp).Select(message => new MessageDto
             {
                 Text = message.Text,
@@ -47,7 +54,12 @@ namespace Mozaodol.Application.UseCases.ChatUseCases
                 ChatId = chat._id,
                 Status = message.Status,
                 ExternalId = string.IsNullOrEmpty(message.ExternalId) ? message._id.ToString() : message.ExternalId,
-                _id = message._id
+                _id = message._id,
+                Media = message.Media != null ? new ReceiveMessageMediaDto
+                {
+                    Url = urlTasks.First(x => x.id == message._id).UrlTask.Result.Value,
+                    Type = message.Media.Type
+                } : null
             }).ToList().ToResult(200);
         }
     }
