@@ -43,8 +43,15 @@ namespace Mozaodol.Application.UseCases.ChatUseCases
 
             var usersDict = chatUsers.ToDictionary(user => user._id);
 
-            var urlTasks = chatMessages.Where(x => x.Media != null).Select(x => new { id = x._id, UrlTask = _storageService.GetDownloadUrl(x.Media.StorageId, x.UserId)});
-            await Task.WhenAll(urlTasks.Select(x => x.UrlTask));
+            var medias = chatMessages
+                .Where(x => x.Media != null)
+                .Select(x => new
+                {
+                    StorageId = x.Media.StorageId, Url = _storageService.GetDownloadUrl(x.Media.StorageId, x.UserId)
+                })
+                .ToDictionary(x => x.StorageId);
+
+            await Task.WhenAll(medias.Values.Select(x => x.Url));
             return chatMessages.OrderByDescending(x => x.Timestamp).Select(message => new MessageDto
             {
                 Text = message.Text,
@@ -57,7 +64,7 @@ namespace Mozaodol.Application.UseCases.ChatUseCases
                 _id = message._id,
                 Media = message.Media != null ? new ReceiveMessageMediaDto
                 {
-                    Url = urlTasks.First(x => x.id == message._id).UrlTask.Result.Value,
+                    Url = medias[message.Media.StorageId].Url.Result.Value,
                     Type = message.Media.Type
                 } : null
             }).ToList().ToResult(200);
