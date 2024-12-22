@@ -53,7 +53,6 @@ namespace Mozaodol.Application.UseCases.ChatUseCases
                 });
 
                 await _distributedCache.SetStringAsync(userIdString, userSateJson);
-                return null;
             }
             var userState = JsonSerializer.Deserialize<UserState>(userSateJson);
             userState.Connected = true;

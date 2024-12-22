@@ -1,5 +1,6 @@
 ﻿using FluentResults;
 using Mozaodol.Application.DTOs.ChatDTOs;
+using Mozaodol.Application.Extensions.Results;
 using Mozaodol.Domain.Entities.ChatEntities;
 using Mozaodol.Domain.Repositories.ChatRepositories;
 using Mozaodol.Domain.Repositories.UserRepositories;
@@ -39,7 +40,7 @@ namespace Mozaodol.Application.UseCases.ChatUseCases
                 _id = chat._id,
                 Name = Chat.GenerateChatName(
                     chatUsers.Where(user => chat.UsersIds.Contains(user._id) && user._id != User.Id).ToArray())
-            }).ToList();
+            }).ToResult(200);
         }
     }
 }

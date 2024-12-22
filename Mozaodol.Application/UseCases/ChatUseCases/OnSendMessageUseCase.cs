@@ -45,6 +45,8 @@ namespace Mozaodol.Application.UseCases.ChatUseCases
 
         public override async Task<Result<MessageDto>> Handle(SendMessageDTO input, CancellationToken cancellationToken)
         {
+            if (string.IsNullOrEmpty(input.Text) && input.Media == null)
+                return Result.Fail("A mensagem não pode ser nula");
             // validar se o chat existe
             // todo: se der algum erro, eu preciso avisar o client sobre o problema no envio
             var chat = await _chatRepository.Get(input.ChatId);
