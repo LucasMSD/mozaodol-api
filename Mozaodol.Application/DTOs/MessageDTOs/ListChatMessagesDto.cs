@@ -9,8 +9,8 @@ namespace Mozaodol.Application.DTOs.MessageDTOs
         [FromRoute]
         public ObjectId ChatId { get; set; }
         [FromQuery]
-        public int PageSize { get; set; } = 5;
+        public int PageSize { get; set; }
         [FromQuery]
-        public int PageNumber { get; set; } = 1;
+        public int PageNumber { get; set; }
     }
 }

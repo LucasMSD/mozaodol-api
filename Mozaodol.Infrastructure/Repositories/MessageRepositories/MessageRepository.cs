@@ -28,14 +28,20 @@ namespace Mozaodol.Infrastructure.Repositories.MessageRepositories
 
         public async Task<List<Message>> GetByChat(ObjectId chatId, IPagination pagination)
         {
-            var skip = (pagination.PageNumber - 1) * pagination.PageSize;
-            var limit = pagination.PageSize;
-
             var pipeline = new EmptyPipelineDefinition<Message>()
                 .Match(x => x.ChatId == chatId)
-                .Sort(new SortDefinitionBuilder<Message>().Descending(x => x.Timestamp))
-                .Skip(skip)
-                .Limit(limit);
+                .Sort(new SortDefinitionBuilder<Message>().Descending(x => x.Timestamp));
+                
+
+            if (pagination.PageSize > 0 && pagination.PageNumber > 0)
+            {
+                var skip = (pagination.PageNumber - 1) * pagination.PageSize;
+                var limit = pagination.PageSize;
+
+                pipeline = pipeline
+                    .Skip(skip)
+                    .Limit(limit);
+            }
 
             var result = await _collection.AggregateAsync(pipeline);
             return await result.ToListAsync();
