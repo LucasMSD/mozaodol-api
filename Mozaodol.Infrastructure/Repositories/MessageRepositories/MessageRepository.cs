@@ -3,18 +3,22 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using Mozaodol.Domain.Entities.MessageEntities;
 using Mozaodol.Domain.Enums;
+using Mozaodol.Domain.Repositories;
 using Mozaodol.Domain.Repositories.MessageRepositories;
 using Mozaodol.Infrastructure.Contexts.MongoDBContexts;
+using System.CodeDom.Compiler;
 
 namespace Mozaodol.Infrastructure.Repositories.MessageRepositories
 {
     public class MessageRepository : IMessageRepository
     {
         private readonly MongoDBContext _context;
+        private readonly IMongoCollection<Message> _collection;
 
         public MessageRepository(MongoDBContext dbContext)
         {
             _context = dbContext;
+            _collection = _context.Database.GetCollection<Message>(nameof(Message));
         }
 
         public async Task<Message> Get(ObjectId _id)
@@ -22,9 +26,18 @@ namespace Mozaodol.Infrastructure.Repositories.MessageRepositories
             return (await _context.Database.GetCollection<Message>(nameof(Message)).FindAsync(x => x._id == _id)).FirstOrDefault();
         }
 
-        public async Task<List<Message>> GetByChat(ObjectId chatId)
+        public async Task<List<Message>> GetByChat(ObjectId chatId, IPagination pagination)
         {
-            var result = await _context.Database.GetCollection<Message>(nameof(Message)).FindAsync(x => x.ChatId == chatId);
+            var skip = (pagination.PageNumber - 1) * pagination.PageSize;
+            var limit = pagination.PageSize;
+
+            var pipeline = new EmptyPipelineDefinition<Message>()
+                .Match(x => x.ChatId == chatId)
+                .Sort(new SortDefinitionBuilder<Message>().Descending(x => x.Timestamp))
+                .Skip(skip)
+                .Limit(limit);
+
+            var result = await _collection.AggregateAsync(pipeline);
             return await result.ToListAsync();
         }
 
