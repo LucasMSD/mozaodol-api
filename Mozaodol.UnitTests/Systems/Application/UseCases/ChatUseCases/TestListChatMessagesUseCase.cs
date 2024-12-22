@@ -100,7 +100,12 @@ namespace Mozaodol.UnitTests.Systems.Application.UseCases.ChatUseCases
             Text = message.Text,
             Timestamp = message.Timestamp.ToString("HH:mm"),
             UserId = message.UserId,
-            UserUsername = user.Username
+            UserUsername = user.Username,
+            Media = message.Media != null ? new ReceiveMessageMediaDto
+            {
+                Url = "http://url.com",
+                Type = message.Media.Type
+            } : null
         };
 
         [Fact]
@@ -119,6 +124,10 @@ namespace Mozaodol.UnitTests.Systems.Application.UseCases.ChatUseCases
             _mockMessageRepository
                 .Setup(x => x.GetByChat(It.IsAny<ObjectId>()))
                 .ReturnsAsync(messages);
+
+            _mockStorageService
+                .Setup(x => x.GetDownloadUrl(It.IsAny<ObjectId>(), It.IsAny<ObjectId>()))
+                .ReturnsAsync("http://url.com");
 
             // act
             var result = await new ListChatMessagesUseCase(
@@ -139,7 +148,7 @@ namespace Mozaodol.UnitTests.Systems.Application.UseCases.ChatUseCases
 
 
         [Fact]
-        public async Task Handle_ShoudlMatchExpectedValues_ReturnResultOk()
+        public async Task Handle_ShouldMatchExpectedValues_ReturnResultOk()
         {
             // arrange
             var (users, chat, messages) = SetupSuccessfulValues;
@@ -155,6 +164,10 @@ namespace Mozaodol.UnitTests.Systems.Application.UseCases.ChatUseCases
             _mockMessageRepository
                 .Setup(x => x.GetByChat(It.Is<ObjectId>(y => y == chat._id)))
                 .ReturnsAsync(messages);
+
+            _mockStorageService
+                .Setup(x => x.GetDownloadUrl(It.IsAny<ObjectId>(), It.IsAny<ObjectId>()))
+                .ReturnsAsync("http://url.com");
 
             // act
             var result = await new ListChatMessagesUseCase(
@@ -174,6 +187,8 @@ namespace Mozaodol.UnitTests.Systems.Application.UseCases.ChatUseCases
 
             result.ValueOrDefault.Should().ContainEquivalentOf(expectedMessageA);
             result.ValueOrDefault.Should().ContainEquivalentOf(expectedMessageB);
+            result.TryGetStatusCode(out var statusCode).Should().BeTrue();
+            ((HttpStatusCode)statusCode).Should().BeDefined().And.Be(HttpStatusCode.OK);
         }
 
         [Fact]
