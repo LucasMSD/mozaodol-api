@@ -74,5 +74,95 @@ namespace Mozaodol.UnitTests.Systems.Application.UseCases.ChatUseCases
             result.TryGetStatusCode(out var statusCode).Should().BeTrue();
             ((HttpStatusCode)statusCode).Should().BeDefined().And.Be(HttpStatusCode.OK);
         }
+
+        [Fact]
+        public async Task Handle_UserNotExists_ReturnUnauthorized()
+        {
+            // arrange
+            _userRepository
+                .Setup(x => x.Get(It.IsAny<ObjectId>()))
+                .ReturnsAsync((User?)null);
+            // act
+            var result = await _controller.Handle(
+                null,
+                new CancellationToken());
+            // assert
+
+            result.Should().NotBeNull();
+            result.ValueOrDefault.Should().BeNullOrEmpty();
+            result.IsSuccess.Should().BeFalse();
+            result.IsFailed.Should().BeTrue();
+            result.TryGetStatusCode(out var statusCode).Should().BeTrue();
+            ((HttpStatusCode)statusCode).Should().BeDefined().And.Be(HttpStatusCode.Unauthorized);
+        }
+
+        [Fact]
+        public async Task Handle_NoChats_ReturnUnauthorized()
+        {
+            // arrange
+
+            _chatRepository
+                .Setup(x => x.Get(It.IsAny<IEnumerable<ObjectId>>()))
+                .ReturnsAsync([]);
+
+            _userRepository
+                .Setup(x => x.Get(It.IsAny<ObjectId>()))
+                .ReturnsAsync(new User
+                {
+                    _id = new ObjectId(),
+                    Username = "teste",
+                    Name = "Test"
+                });
+            // act
+            var result = await _controller.Handle(
+                null,
+                new CancellationToken());
+            // assert
+
+            result.Should().NotBeNull();
+            result.ValueOrDefault.Should().BeNullOrEmpty();
+            result.IsSuccess.Should().BeTrue();
+            result.IsFailed.Should().BeFalse();
+            result.TryGetStatusCode(out var statusCode).Should().BeTrue();
+            ((HttpStatusCode)statusCode).Should().BeDefined().And.Be(HttpStatusCode.NoContent);
+        }
+
+        [Fact]
+        public async Task Handle_NoUsersInChat_ReturnInternalError()
+        {
+            // arrange
+
+            _chatRepository
+                .Setup(x => x.Get(It.IsAny<IEnumerable<ObjectId>>()))
+                .ReturnsAsync([new Chat {
+                    _id = new ObjectId(),
+                    UsersIds = [new ObjectId(), new ObjectId()]
+                }]);
+
+            _userRepository
+                .Setup(x => x.Get(It.IsAny<IEnumerable<ObjectId>>()))
+                .ReturnsAsync([]);
+
+            _userRepository
+                .Setup(x => x.Get(It.IsAny<ObjectId>()))
+                .ReturnsAsync(new User
+                {
+                    _id = new ObjectId(),
+                    Username = "teste",
+                    Name = "Test"
+                });
+            // act
+            var result = await _controller.Handle(
+                null,
+                new CancellationToken());
+            // assert
+
+            result.Should().NotBeNull();
+            result.ValueOrDefault.Should().BeNullOrEmpty();
+            result.IsSuccess.Should().BeFalse();
+            result.IsFailed.Should().BeTrue();
+            result.TryGetStatusCode(out var statusCode).Should().BeTrue();
+            ((HttpStatusCode)statusCode).Should().BeDefined().And.Be(HttpStatusCode.InternalServerError);
+        }
     }
 }

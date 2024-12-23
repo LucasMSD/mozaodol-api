@@ -1,7 +1,6 @@
 ﻿using FluentResults;
 using Mozaodol.Application.DTOs.MessageDTOs;
 using Mozaodol.Application.Extensions.Results;
-using Mozaodol.Domain.Repositories;
 using Mozaodol.Domain.Repositories.ChatRepositories;
 using Mozaodol.Domain.Repositories.MessageRepositories;
 using Mozaodol.Domain.Repositories.UserRepositories;

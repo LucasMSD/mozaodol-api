@@ -26,14 +26,14 @@ namespace Mozaodol.Application.UseCases.ChatUseCases
         {
             // todo: refatorar
             var user = await _userRepository.Get(User.Id);
-            if (user == null) return Result.Fail("Usuário não existe");
+            if (user == null) return Result.Fail("Usuário não existe").SetStatusCode(401);
 
             var chats = await _chatRepository.Get(user.ChatsIds);
 
-            if (chats.Count == 0) return Enumerable.Empty<ChatDto>().ToResult();
+            if (chats.Count == 0) return Enumerable.Empty<ChatDto>().ToResult(204);
 
             var chatUsers = await _userRepository.Get(chats.SelectMany(x => x.UsersIds));
-            if (chatUsers.Count == 0) return Result.Fail("Usuários do chat não existem");
+            if (chatUsers.Count == 0) return Result.Fail("Usuários do chat não existem").SetStatusCode(500);
 
             return chats.Select(chat => new ChatDto
             {

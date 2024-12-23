@@ -26,12 +26,11 @@ namespace Mozaodol.Infrastructure.Repositories.MessageRepositories
             return (await _context.Database.GetCollection<Message>(nameof(Message)).FindAsync(x => x._id == _id)).FirstOrDefault();
         }
 
-        public async Task<List<Message>> GetByChat(ObjectId chatId, IPagination pagination)
+        public async Task<List<Message>> GetByChat(ObjectId chatId, Pagination pagination)
         {
             var pipeline = new EmptyPipelineDefinition<Message>()
                 .Match(x => x.ChatId == chatId)
                 .Sort(new SortDefinitionBuilder<Message>().Descending(x => x.Timestamp));
-                
 
             if (pagination.PageSize > 0 && pagination.PageNumber > 0)
             {
