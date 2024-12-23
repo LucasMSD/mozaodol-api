@@ -122,7 +122,7 @@ namespace Mozaodol.UnitTests.Systems.Application.UseCases.ChatUseCases
                 .ReturnsAsync(users);
 
             _mockMessageRepository
-                .Setup(x => x.GetByChat(It.IsAny<ObjectId>()))
+                .Setup(x => x.GetByChat(It.IsAny<ObjectId>(), null))
                 .ReturnsAsync(messages);
 
             _mockStorageService
@@ -135,7 +135,7 @@ namespace Mozaodol.UnitTests.Systems.Application.UseCases.ChatUseCases
                 _mockUserRepository.Object,
                 _mockMessageRepository.Object,
                 _mockStorageService.Object)
-                .Handle(chat._id, It.IsAny<CancellationToken>());
+                .Handle(new ListChatMessagesDto() { ChatId = chat._id }, It.IsAny<CancellationToken>());
             // assert
 
             result.Should().NotBeNull();
@@ -162,7 +162,7 @@ namespace Mozaodol.UnitTests.Systems.Application.UseCases.ChatUseCases
                 .ReturnsAsync(users);
 
             _mockMessageRepository
-                .Setup(x => x.GetByChat(It.Is<ObjectId>(y => y == chat._id)))
+                .Setup(x => x.GetByChat(It.Is<ObjectId>(y => y == chat._id), null))
                 .ReturnsAsync(messages);
 
             _mockStorageService
@@ -175,7 +175,7 @@ namespace Mozaodol.UnitTests.Systems.Application.UseCases.ChatUseCases
                 _mockUserRepository.Object,
                 _mockMessageRepository.Object,
                 _mockStorageService.Object)
-                .Handle(chat._id, It.IsAny<CancellationToken>());
+                .Handle(new ListChatMessagesDto() { ChatId = chat._id }, It.IsAny<CancellationToken>());
             // assert
 
             result.ValueOrDefault.Select(x => x.Timestamp).Should().BeInDescendingOrder();
@@ -205,7 +205,7 @@ namespace Mozaodol.UnitTests.Systems.Application.UseCases.ChatUseCases
                 _mockUserRepository.Object,
                 _mockMessageRepository.Object,
                 _mockStorageService.Object)
-                .Handle(It.IsAny<ObjectId>(), It.IsAny<CancellationToken>());
+                .Handle(It.IsAny<ListChatMessagesDto>(), It.IsAny<CancellationToken>());
             // assert
 
             result.Should().NotBeNull();
@@ -235,7 +235,7 @@ namespace Mozaodol.UnitTests.Systems.Application.UseCases.ChatUseCases
                 _mockUserRepository.Object,
                 _mockMessageRepository.Object,
                 _mockStorageService.Object)
-                .Handle(It.IsAny<ObjectId>(), It.IsAny<CancellationToken>());
+                .Handle(It.IsAny<ListChatMessagesDto>(), It.IsAny<CancellationToken>());
             // assert
 
             result.Should().NotBeNull();
@@ -260,7 +260,7 @@ namespace Mozaodol.UnitTests.Systems.Application.UseCases.ChatUseCases
                 .ReturnsAsync([new User()]);
 
             _mockMessageRepository
-                .Setup(x => x.GetByChat(It.IsAny<ObjectId>()))
+                .Setup(x => x.GetByChat(It.IsAny<ObjectId>(), null))
                 .ReturnsAsync([]);
 
             // act
@@ -269,7 +269,7 @@ namespace Mozaodol.UnitTests.Systems.Application.UseCases.ChatUseCases
                 _mockUserRepository.Object,
                 _mockMessageRepository.Object,
                 _mockStorageService.Object)
-                .Handle(It.IsAny<ObjectId>(), It.IsAny<CancellationToken>());
+                .Handle(It.IsAny<ListChatMessagesDto>(), It.IsAny<CancellationToken>());
             // assert
 
             result.Should().NotBeNull();

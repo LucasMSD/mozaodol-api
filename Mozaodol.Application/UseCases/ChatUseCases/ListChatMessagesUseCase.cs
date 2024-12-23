@@ -1,7 +1,7 @@
 ﻿using FluentResults;
-using MongoDB.Bson;
 using Mozaodol.Application.DTOs.MessageDTOs;
 using Mozaodol.Application.Extensions.Results;
+using Mozaodol.Domain.Repositories;
 using Mozaodol.Domain.Repositories.ChatRepositories;
 using Mozaodol.Domain.Repositories.MessageRepositories;
 using Mozaodol.Domain.Repositories.UserRepositories;
@@ -10,7 +10,7 @@ using Mozaodol.Domain.Services;
 namespace Mozaodol.Application.UseCases.ChatUseCases
 {
     public class ListChatMessagesUseCase :
-        DefaultUseCase<ObjectId, List<MessageDto>>,
+        DefaultUseCase<ListChatMessagesDto, List<MessageDto>>,
         IListChatMessagesUseCase
     {
         private readonly IChatRepository _chatRepository;
@@ -30,15 +30,15 @@ namespace Mozaodol.Application.UseCases.ChatUseCases
             _storageService = storageService;
         }
 
-        public override async Task<Result<List<MessageDto>>> Handle(ObjectId chatId, CancellationToken cancellationToken)
+        public override async Task<Result<List<MessageDto>>> Handle(ListChatMessagesDto input, CancellationToken cancellationToken)
         {
-            var chat = await _chatRepository.Get(chatId);
+            var chat = await _chatRepository.Get(input.ChatId);
             if (chat == null) return Result.Fail("Chat não encontrado.").SetStatusCode(404);
 
             var chatUsers = await _userRepository.Get(chat.UsersIds);
             if (chatUsers.Count == 0) return Result.Fail("Usuários do chat não encontrados.").SetStatusCode(500);
 
-            var chatMessages = await _messageRepository.GetByChat(chatId);
+            var chatMessages = await _messageRepository.GetByChat(input.ChatId, input);
             if (chatMessages.Count == 0) return Result.Ok().SetStatusCode(204);
 
             var usersDict = chatUsers.ToDictionary(user => user._id);
@@ -47,7 +47,7 @@ namespace Mozaodol.Application.UseCases.ChatUseCases
                 .Where(x => x.Media != null)
                 .Select(x => new
                 {
-                    StorageId = x.Media.StorageId, Url = _storageService.GetDownloadUrl(x.Media.StorageId, x.UserId)
+                    x.Media.StorageId, Url = _storageService.GetDownloadUrl(x.Media.StorageId, x.UserId)
                 })
                 .ToDictionary(x => x.StorageId);
 
