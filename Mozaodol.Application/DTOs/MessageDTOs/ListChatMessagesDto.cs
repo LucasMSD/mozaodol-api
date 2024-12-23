@@ -4,13 +4,13 @@ using Mozaodol.Domain.Repositories;
 
 namespace Mozaodol.Application.DTOs.MessageDTOs
 {
-    public class ListChatMessagesDto : IPagination
+    public class ListChatMessagesDto : Pagination
     {
         [FromRoute]
         public ObjectId ChatId { get; set; }
         [FromQuery]
-        public int PageSize { get; set; }
+        public new int PageSize { get; set; }
         [FromQuery]
-        public int PageNumber { get; set; }
+        public new int PageNumber { get; set; }
     }
 }

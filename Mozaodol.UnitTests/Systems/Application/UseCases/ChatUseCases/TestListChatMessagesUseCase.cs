@@ -8,6 +8,7 @@ using Mozaodol.Domain.Entities.ChatEntities;
 using Mozaodol.Domain.Entities.MessageEntities;
 using Mozaodol.Domain.Entities.UserEntities;
 using Mozaodol.Domain.Enums;
+using Mozaodol.Domain.Repositories;
 using Mozaodol.Domain.Repositories.ChatRepositories;
 using Mozaodol.Domain.Repositories.MessageRepositories;
 using Mozaodol.Domain.Repositories.UserRepositories;
@@ -23,6 +24,7 @@ namespace Mozaodol.UnitTests.Systems.Application.UseCases.ChatUseCases
         private readonly Mock<IUserRepository> _mockUserRepository;
         private readonly Mock<IMessageRepository> _mockMessageRepository;
         private readonly Mock<IStorageService> _mockStorageService;
+        private readonly Pagination _pagination;
 
         public TestListChatMessagesUseCase()
         {
@@ -30,6 +32,7 @@ namespace Mozaodol.UnitTests.Systems.Application.UseCases.ChatUseCases
             _mockUserRepository = new Mock<IUserRepository>();
             _mockMessageRepository = new Mock<IMessageRepository>();
             _mockStorageService = new Mock<IStorageService>();
+            _pagination = new Pagination();
         }
 
         private (List<User>, Chat, List<Message>) SetupSuccessfulValues
@@ -122,7 +125,7 @@ namespace Mozaodol.UnitTests.Systems.Application.UseCases.ChatUseCases
                 .ReturnsAsync(users);
 
             _mockMessageRepository
-                .Setup(x => x.GetByChat(It.IsAny<ObjectId>(), null))
+                .Setup(x => x.GetByChat(It.IsAny<ObjectId>(), It.IsAny<Pagination>()))
                 .ReturnsAsync(messages);
 
             _mockStorageService
@@ -162,7 +165,7 @@ namespace Mozaodol.UnitTests.Systems.Application.UseCases.ChatUseCases
                 .ReturnsAsync(users);
 
             _mockMessageRepository
-                .Setup(x => x.GetByChat(It.Is<ObjectId>(y => y == chat._id), null))
+                .Setup(x => x.GetByChat(It.Is<ObjectId>(y => y == chat._id), It.IsAny<Pagination>()))
                 .ReturnsAsync(messages);
 
             _mockStorageService
@@ -205,7 +208,7 @@ namespace Mozaodol.UnitTests.Systems.Application.UseCases.ChatUseCases
                 _mockUserRepository.Object,
                 _mockMessageRepository.Object,
                 _mockStorageService.Object)
-                .Handle(It.IsAny<ListChatMessagesDto>(), It.IsAny<CancellationToken>());
+                .Handle(new ListChatMessagesDto() { ChatId = new ObjectId() }, It.IsAny<CancellationToken>());
             // assert
 
             result.Should().NotBeNull();
@@ -235,7 +238,7 @@ namespace Mozaodol.UnitTests.Systems.Application.UseCases.ChatUseCases
                 _mockUserRepository.Object,
                 _mockMessageRepository.Object,
                 _mockStorageService.Object)
-                .Handle(It.IsAny<ListChatMessagesDto>(), It.IsAny<CancellationToken>());
+                .Handle(new ListChatMessagesDto() { ChatId = new ObjectId() }, It.IsAny<CancellationToken>());
             // assert
 
             result.Should().NotBeNull();
@@ -251,16 +254,17 @@ namespace Mozaodol.UnitTests.Systems.Application.UseCases.ChatUseCases
         public async Task Handle_NoMessagesInChat_ReturnOkNoContent()
         {
             // arrange
+            var (users, chat, _) = SetupSuccessfulValues;
             _mockChatRepository
                 .Setup(x => x.Get(It.IsAny<ObjectId>()))
-                .ReturnsAsync(new Chat());
+                .ReturnsAsync(chat);
 
             _mockUserRepository
                 .Setup(x => x.Get(It.IsAny<IEnumerable<ObjectId>>()))
-                .ReturnsAsync([new User()]);
+                .ReturnsAsync(users);
 
             _mockMessageRepository
-                .Setup(x => x.GetByChat(It.IsAny<ObjectId>(), null))
+                .Setup(x => x.GetByChat(It.IsAny<ObjectId>(), It.IsAny<Pagination>()))
                 .ReturnsAsync([]);
 
             // act
@@ -269,7 +273,7 @@ namespace Mozaodol.UnitTests.Systems.Application.UseCases.ChatUseCases
                 _mockUserRepository.Object,
                 _mockMessageRepository.Object,
                 _mockStorageService.Object)
-                .Handle(It.IsAny<ListChatMessagesDto>(), It.IsAny<CancellationToken>());
+                .Handle(new ListChatMessagesDto() { ChatId = chat._id }, It.IsAny<CancellationToken>());
             // assert
 
             result.Should().NotBeNull();

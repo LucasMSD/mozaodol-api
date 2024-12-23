@@ -1,6 +1,6 @@
 ﻿namespace Mozaodol.Domain.Repositories;
 
-    public interface IPagination
+    public class Pagination
     {
         public int PageSize { get; set; }
         public int PageNumber { get; set; }

@@ -6,7 +6,7 @@ namespace Mozaodol.Domain.Repositories.MessageRepositories
 {
     public interface IMessageRepository
     {
-        Task<List<Message>> GetByChat(ObjectId chatId, IPagination pagination);
+        Task<List<Message>> GetByChat(ObjectId chatId, Pagination pagination);
         Task Insert(Message message);
 
         Task UpdateStatus(ObjectId _id, MessageStatus status);
