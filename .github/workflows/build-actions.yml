@@ -7,7 +7,7 @@ on:
     types: [opened, synchronize, reopened]
 jobs:
   sonar:
-    name: Build and analyze
+    name: Sonar Analysis
     runs-on: windows-latest
     steps:
       - name: Set up JDK 17
@@ -46,9 +46,10 @@ jobs:
           .\.sonar\scanner\dotnet-sonarscanner begin /k:"LucasMSD_mozaodol-api" /o:"lucasmsd" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
           dotnet build
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
-  first_job:
-    name: Meu primeiro Job
+  Build:
+    name: Build and Deploy
     runs-on: ubuntu-latest
+    needs: sonar
     steps:
       - name: Checkout
         uses: actions/checkout@v4
