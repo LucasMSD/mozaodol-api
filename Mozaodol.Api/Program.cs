@@ -134,7 +134,7 @@ namespace Mozaodol
             builder.Services.AddScoped<IMessageRepository, MessageRepository>();
             builder.Services.AddScoped<IStorageRepository, StorageRepository>();
             builder.Services.AddScoped<ITokenService, JwtTokenService>();
-            
+
             builder.Services.AddScoped<IRealTimeNotificationService, SignalRNotificationService<ChatHub>>();
             builder.Services.AddScoped<IPushNotificationService, ExpoPushNotificationService>();
 

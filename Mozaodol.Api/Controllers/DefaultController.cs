@@ -33,7 +33,7 @@ namespace Mozaodol.Api.Controllers
             TInput input,
             CancellationToken cancellationToken)
         {
-            useCase.SetUserInfo(GetUser()); 
+            useCase.SetUserInfo(GetUser());
             return await base.RunAsync(useCase, input, cancellationToken);
         }
     }

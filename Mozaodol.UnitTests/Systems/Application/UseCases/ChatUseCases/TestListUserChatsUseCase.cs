@@ -8,7 +8,6 @@ using Mozaodol.Domain.Entities.ChatEntities;
 using Mozaodol.Domain.Entities.UserEntities;
 using Mozaodol.Domain.Repositories.ChatRepositories;
 using Mozaodol.Domain.Repositories.UserRepositories;
-using StackExchange.Redis;
 using System.Net;
 
 namespace Mozaodol.UnitTests.Systems.Application.UseCases.ChatUseCases
@@ -56,7 +55,8 @@ namespace Mozaodol.UnitTests.Systems.Application.UseCases.ChatUseCases
 
             _userRepository
                 .Setup(x => x.Get(It.IsAny<ObjectId>()))
-                .ReturnsAsync(new User {
+                .ReturnsAsync(new User
+                {
                     _id = new ObjectId(),
                     Username = "teste",
                     Name = "Test"

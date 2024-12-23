@@ -46,7 +46,8 @@ namespace Mozaodol.Application.UseCases.ChatUseCases
                 .Where(x => x.Media != null)
                 .Select(x => new
                 {
-                    x.Media.StorageId, Url = _storageService.GetDownloadUrl(x.Media.StorageId, x.UserId)
+                    x.Media.StorageId,
+                    Url = _storageService.GetDownloadUrl(x.Media.StorageId, x.UserId)
                 })
                 .ToDictionary(x => x.StorageId);
 

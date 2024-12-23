@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Bson;
 using Mozaodol.Application.DTOs.MessageDTOs;
 using Mozaodol.Application.UseCases.ChatUseCases;
 
