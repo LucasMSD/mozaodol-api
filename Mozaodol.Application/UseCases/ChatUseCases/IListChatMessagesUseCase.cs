@@ -1,5 +1,4 @@
-﻿using MongoDB.Bson;
-using Mozaodol.Application.DTOs.MessageDTOs;
+﻿using Mozaodol.Application.DTOs.MessageDTOs;
 
 namespace Mozaodol.Application.UseCases.ChatUseCases
 {

@@ -1,10 +1,8 @@
 ﻿using FluentResults;
 using Microsoft.Extensions.Caching.Distributed;
-using MongoDB.Bson;
 using Mozaodol.Application.DTOs.UserDTOs;
 using Mozaodol.Domain.Repositories.ChatRepositories;
 using Mozaodol.Domain.Services;
-using System.Data;
 using System.Text.Json;
 
 namespace Mozaodol.Application.UseCases.ChatUseCases

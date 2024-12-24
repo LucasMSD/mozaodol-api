@@ -19,7 +19,7 @@ namespace Mozaodol.Application.UseCases.ChatUseCases
         private readonly IGetUserDtoUseByIdUseCase _getUserDtoUseByIdUseCase;
         private readonly IChatRepository _chatRepository;
         private readonly IRealTimeNotificationService _realTimeNotificationService;
-        private readonly IUserRepository  _userRepository;
+        private readonly IUserRepository _userRepository;
 
         public OnConnectedUseCase(
             IDistributedCache distributedCache,

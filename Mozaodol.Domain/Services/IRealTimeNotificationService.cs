@@ -9,7 +9,7 @@
         Task Notify(string userId, IRealTimeNotificationMessage message);
         Task NotifyExcept(string excludedConnection, IRealTimeNotificationMessage message);
         Task NotifyGroup(string groupName, IRealTimeNotificationMessage message);
-        Task NotifyGroupExcept(string groupName, string excludedConnectionId,IRealTimeNotificationMessage message);
+        Task NotifyGroupExcept(string groupName, string excludedConnectionId, IRealTimeNotificationMessage message);
         Task NotifyGroupExcept(string groupName, IEnumerable<string> excludedConnectionsIds, IRealTimeNotificationMessage message);
         Task NotifyGroupExcept(IEnumerable<string> groupsNames, string excludedConnectionId, IRealTimeNotificationMessage message);
     }

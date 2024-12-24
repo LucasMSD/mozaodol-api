@@ -68,7 +68,7 @@ namespace Mozaodol.Application.UseCases.ChatUseCases
 
             if (input.Media != null && !string.IsNullOrEmpty(input.Media.ContentBase64))
             {
-                var uploadResult = await _storageService.Upload(input.Media.ContentBase64, input.Media.Extension,input.Media.Type, user._id);
+                var uploadResult = await _storageService.Upload(input.Media.ContentBase64, input.Media.Extension, input.Media.Type, user._id);
                 if (uploadResult.IsFailed)
                     return Result.Fail(uploadResult.Errors);
 

@@ -3,7 +3,7 @@ using Mozaodol.Application.CrossCutting.Models;
 
 namespace Mozaodol.Application.UseCases
 {
-    public abstract class DefaultUseCase<TInput, TResponse> : IUseCase<TInput,TResponse>
+    public abstract class DefaultUseCase<TInput, TResponse> : IUseCase<TInput, TResponse>
     {
         public UserInfo User { get; set; }
 

@@ -2,7 +2,6 @@
 using MongoDB.Bson;
 using Mozaodol.Domain.Entities.MessageEntities;
 using Mozaodol.Domain.Entities.StorageEntities;
-using Mozaodol.Domain.Entities.UserEntities;
 using Mozaodol.Domain.Repositories.StorageRepositories;
 using Mozaodol.Domain.Services;
 
